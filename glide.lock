@@ -1,0 +1,16 @@
+hash: 4b8eaa3d5d5729c04834a3b5b8bacc2ade86159a140291b10801e603fd6f9b30
+updated: 2016-09-22T00:43:57.258205479+08:00
+imports:
+- name: github.com/bitly/go-simplejson
+  version: aabad6e819789e569bd6aabf444c935aa9ba1e44
+- name: github.com/moul/http2curl
+  version: b1479103caacaa39319f75e7f57fc545287fca0d
+- name: github.com/parnurzeal/gorequest
+  version: 2aea80ce763523ecc6452e61c3727ae9595a5809
+- name: github.com/satori/go.uuid
+  version: 0aa62d5ddceb50dbcb909d790b5345affd3669b6
+- name: golang.org/x/net
+  version: 71a035914f99bb58fe82eac0f1289f10963d876c
+  subpackages:
+  - publicsuffix
+testImports: []

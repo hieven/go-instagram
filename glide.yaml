@@ -1,0 +1,6 @@
+package: github.com/hieven/go-instagram
+import:
+- package: github.com/parnurzeal/gorequest
+  version: ^0.2.14
+- package: github.com/bitly/go-simplejson
+  version: ^0.5.0
