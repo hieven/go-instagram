@@ -10,11 +10,12 @@ import (
 )
 
 type Thread struct {
-	ID       string                `json:"thread_id"`
-	Users    []UserSchema          `json:"users"`
-	Items    []ItemSchema          `json:"items"`
-	HasNewer bool                  `json:"has_newer"`
-	Request  *gorequest.SuperAgent `json:"request"`
+	ID             string                `json:"thread_id"`
+	Users          []*UserSchema         `json:"users"`
+	Items          []*ItemSchema         `json:"items"`
+	ImageVersions2 ImageVersions2        `json:"image_versions2"`
+	HasNewer       bool                  `json:"has_newer"`
+	Request        *gorequest.SuperAgent `json:"request"`
 }
 
 type UserSchema struct {
@@ -32,7 +33,7 @@ type ItemSchema struct {
 	Placeholder placeholderSchema `json:"placeholder"`
 	Text        string            `json:"text"`
 	MediaShare  mediaShareSchema  `json:"media_share"`
-	Location    locationSchema    `json:"location"`
+	Location    Location          `json:"location"`
 }
 
 type broadcastTextSchema struct {
@@ -49,31 +50,10 @@ type placeholderSchema struct {
 }
 
 type mediaShareSchema struct {
-	ImageVersion2 imageVersion2Schema `json:"image_versions2"`
-	Location      locationSchema      `json:"location"`
-	Lat           float32             `json:"lat"`
-	Lng           float32             `json:"lng"`
-}
-
-type imageVersion2Schema struct {
-	Candidates []candidateSchema `json:"candidates"`
-}
-
-type candidateSchema struct {
-	url    string
-	width  int
-	height int
-}
-
-type locationSchema struct {
-	ExternalSource   string  `json:"external_source"`
-	City             string  `json:"city"`
-	Name             string  `json:"name"`
-	FacebookPlacesID int     `json:"facebook_places_id"`
-	Address          string  `json:"address"`
-	Lat              float32 `json:"lat"`
-	Lng              float32 `json:"lng"`
-	Pk               int     `json:"pk"`
+	ImageVersions2 ImageVersions2 `json:"image_versions2"`
+	Location       Location       `json:"location"`
+	Lat            float32        `json:"lat"`
+	Lng            float32        `json:"lng"`
 }
 
 func (thread Thread) BroadcastText(text string) (body string) {

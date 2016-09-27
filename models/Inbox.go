@@ -2,7 +2,6 @@ package models
 
 import (
 	"encoding/json"
-	"log"
 
 	"github.com/hieven/go-instagram/constants"
 	"github.com/hieven/go-instagram/utils"
@@ -25,11 +24,15 @@ func (inbox *Inbox) GetFeed() (threads []*Thread) {
 	var resp feedResponse
 	json.Unmarshal([]byte(body), &resp)
 
-	log.Println(body)
+	// fmt.Println(body)
 	inbox.Threads = resp.Inbox.Threads
 
 	for _, thread := range inbox.Threads {
 		thread.Request = inbox.Request
+
+		for _, item := range thread.Items {
+			item.Location.Request = inbox.Request
+		}
 	}
 
 	return inbox.Threads
