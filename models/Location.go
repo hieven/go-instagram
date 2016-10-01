@@ -15,8 +15,8 @@ type Location struct {
 	Name             string                `json:"name"`
 	FacebookPlacesID int                   `json:"facebook_places_id"`
 	Address          string                `json:"address"`
-	Lat              float32               `json:"lat"`
-	Lng              float32               `json:"lng"`
+	Lat              float64               `json:"lat"`
+	Lng              float64               `json:"lng"`
 	Pk               int                   `json:"pk"`
 	Request          *gorequest.SuperAgent `json:"request"`
 }

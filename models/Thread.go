@@ -52,8 +52,8 @@ type placeholderSchema struct {
 type mediaShareSchema struct {
 	ImageVersions2 ImageVersions2 `json:"image_versions2"`
 	Location       Location       `json:"location"`
-	Lat            float32        `json:"lat"`
-	Lng            float32        `json:"lng"`
+	Lat            float64        `json:"lat"`
+	Lng            float64        `json:"lng"`
 }
 
 func (thread Thread) BroadcastText(text string) (body string) {
