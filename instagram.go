@@ -44,9 +44,7 @@ func (ig Instagram) Login() {
 		Request:           ig.Request,
 	}
 
-	body := login.Login()
-
-	log.Println(body)
+	login.Login()
 }
 
 func (ig Instagram) GetInboxFeed() []*models.Thread {
