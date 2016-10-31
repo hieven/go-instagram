@@ -2,7 +2,7 @@ package models
 
 type Media struct {
 	Pk              int            `json:"pk"`
-	ID              int            `json:"id"`
+	ID              string         `json:"id"`
 	DeviceTimestamp int            `json:"device_timestamp"`
 	MediaType       int            `json:"media_type"`
 	Code            string         `json:"code"`

@@ -1,8 +1,6 @@
 package instagram
 
 import (
-	"log"
-
 	"github.com/hieven/go-instagram/models"
 	"github.com/hieven/go-instagram/utils"
 	"github.com/parnurzeal/gorequest"
@@ -29,9 +27,6 @@ func Create(username string, password string) *Instagram {
 }
 
 func (ig Instagram) Login() {
-	log.Println("---------------->")
-	log.Println("Method: Login")
-
 	uuid := utils.GenerateUUID()
 
 	login := models.Login{

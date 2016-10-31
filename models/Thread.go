@@ -32,7 +32,7 @@ type ItemSchema struct {
 	// depends on ItemType
 	Placeholder placeholderSchema `json:"placeholder"`
 	Text        string            `json:"text"`
-	MediaShare  mediaShareSchema  `json:"media_share"`
+	MediaShare  Media             `json:"media_share"`
 	Location    Location          `json:"location"`
 }
 
@@ -47,13 +47,6 @@ type placeholderSchema struct {
 	IsLinked bool   `json:"is_linked"`
 	Message  string `json:"message"`
 	Title    string `json:"title"`
-}
-
-type mediaShareSchema struct {
-	ImageVersions2 ImageVersions2 `json:"image_versions2"`
-	Location       Location       `json:"location"`
-	Lat            float64        `json:"lat"`
-	Lng            float64        `json:"lng"`
 }
 
 func (thread Thread) BroadcastText(text string) (body string) {
