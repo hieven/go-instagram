@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 
 	"github.com/hieven/go-instagram/constants"
@@ -12,7 +13,7 @@ import (
 type Thread struct {
 	ID             string                `json:"thread_id"`
 	Users          []*UserSchema         `json:"users"`
-	Items          []*ItemSchema         `json:"items"`
+	Items          []*ThreadItem         `json:"items"`
 	ImageVersions2 ImageVersions2        `json:"image_versions2"`
 	HasNewer       bool                  `json:"has_newer"`
 	Request        *gorequest.SuperAgent `json:"request"`
@@ -23,19 +24,6 @@ type UserSchema struct {
 	Pk       int    `json:"pk"`
 }
 
-type ItemSchema struct {
-	ID        string `json:"item_id"`
-	UserID    int    `json:"user_id"`
-	ItemType  string `json:"item_type"`
-	Timestamp int    `json:"timestamp"`
-
-	// depends on ItemType
-	Placeholder placeholderSchema `json:"placeholder"`
-	Text        string            `json:"text"`
-	MediaShare  Media             `json:"media_share"`
-	Location    Location          `json:"location"`
-}
-
 type broadcastTextSchema struct {
 	UUID          string `json:"_uuid"`
 	ThreadIds     string `json:"thread_ids"`
@@ -43,14 +31,13 @@ type broadcastTextSchema struct {
 	Text          string `json:"text"`
 }
 
-type placeholderSchema struct {
-	IsLinked bool   `json:"is_linked"`
-	Message  string `json:"message"`
-	Title    string `json:"title"`
+type showResponse struct {
+	Status  string `json:"status"`
+	Message string `json:"message"`
+	Thread  Thread `json:"thread"`
 }
 
-func (thread Thread) BroadcastText(text string) (body string) {
-	log.Println("Thread---------------->")
+func (thread *Thread) BroadcastText(text string) (body string) {
 	log.Println("Method: BroadcastText ", text)
 
 	payload := broadcastTextSchema{
@@ -68,4 +55,28 @@ func (thread Thread) BroadcastText(text string) (body string) {
 			Send(string(jsonData)))
 
 	return body
+}
+
+func (thread *Thread) Show() *Thread {
+	_, body, _ := utils.WrapRequest(thread.Request.Get(constants.ROUTES.ThreadsShow + thread.ID + "/"))
+
+	var resp showResponse
+	json.Unmarshal([]byte(body), &resp)
+
+	if resp.Status == "fail" {
+		fmt.Println(resp.Message)
+		return thread
+	}
+
+	for _, item := range resp.Thread.Items {
+		// if item.Location == nil {
+		// 	continue
+		// }
+
+		item.Location.Request = thread.Request
+	}
+
+	thread.Items = resp.Thread.Items
+
+	return thread
 }

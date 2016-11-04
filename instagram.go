@@ -10,8 +10,8 @@ type Instagram struct {
 	Username string
 	Password string
 	Request  *gorequest.SuperAgent
-	Inbox    models.Inbox
-	Thread   models.Thread
+	Inbox    *models.Inbox
+	Thread   *models.Thread
 }
 
 func Create(username string, password string) *Instagram {
@@ -22,6 +22,8 @@ func Create(username string, password string) *Instagram {
 	}
 
 	ig.Login()
+
+	ig.Inbox = &models.Inbox{Request: ig.Request}
 
 	return &ig
 }
@@ -40,12 +42,4 @@ func (ig Instagram) Login() {
 	}
 
 	login.Login()
-}
-
-func (ig Instagram) GetInboxFeed() []*models.Thread {
-	inbox := &models.Inbox{
-		Request: ig.Request,
-	}
-
-	return inbox.GetFeed()
 }
