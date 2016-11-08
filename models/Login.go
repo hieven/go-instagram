@@ -15,7 +15,7 @@ type Login struct {
 	UserName          string                `json:"username"`
 	Password          string                `json:"password"`
 	LoginAttemptCount int                   `json:"login_attempt_count"`
-	Request           *gorequest.SuperAgent `json:"-"`
+	Agent             *gorequest.SuperAgent `json:"-"`
 }
 
 type LoginRequestSchema struct {
@@ -40,7 +40,7 @@ func (login Login) Login() (body string) {
 	jsonData, _ := json.Marshal(payload)
 
 	_, body, _ = utils.WrapRequest(
-		login.Request.Post(constants.ROUTES.Login).
+		login.Agent.Post(constants.ROUTES.Login).
 			Type("multipart").
 			Send(string(jsonData)))
 

@@ -7,7 +7,6 @@ import (
 
 	"github.com/hieven/go-instagram/constants"
 	"github.com/hieven/go-instagram/utils"
-	"github.com/parnurzeal/gorequest"
 )
 
 type Thread struct {
@@ -16,7 +15,7 @@ type Thread struct {
 	Items          []*ThreadItem         `json:"items"`
 	ImageVersions2 ImageVersions2        `json:"image_versions2"`
 	HasNewer       bool                  `json:"has_newer"`
-	Request        *gorequest.SuperAgent `json:"request"`
+	AgentPool      *utils.SuperAgentPool `json:"-"`
 }
 
 type UserSchema struct {
@@ -49,8 +48,11 @@ func (thread *Thread) BroadcastText(text string) (body string) {
 
 	jsonData, _ := json.Marshal(payload)
 
+	agent := thread.AgentPool.Get()
+	defer thread.AgentPool.Put(agent)
+
 	_, body, _ = utils.WrapRequest(
-		thread.Request.Post(constants.ROUTES.ThreadsBroadcastText).
+		agent.Post(constants.ROUTES.ThreadsBroadcastText).
 			Type("multipart").
 			Send(string(jsonData)))
 
@@ -58,7 +60,10 @@ func (thread *Thread) BroadcastText(text string) (body string) {
 }
 
 func (thread *Thread) Show() *Thread {
-	_, body, _ := utils.WrapRequest(thread.Request.Get(constants.ROUTES.ThreadsShow + thread.ID + "/"))
+	agent := thread.AgentPool.Get()
+	defer thread.AgentPool.Put(agent)
+
+	_, body, _ := utils.WrapRequest(agent.Get(constants.ROUTES.ThreadsShow + thread.ID + "/"))
 
 	var resp showResponse
 	json.Unmarshal([]byte(body), &resp)
@@ -73,7 +78,7 @@ func (thread *Thread) Show() *Thread {
 		// 	continue
 		// }
 
-		item.Location.Request = thread.Request
+		item.Location.AgentPool = thread.AgentPool
 	}
 
 	thread.Items = resp.Thread.Items

@@ -6,7 +6,6 @@ import (
 
 	"github.com/hieven/go-instagram/constants"
 	"github.com/hieven/go-instagram/utils"
-	"github.com/parnurzeal/gorequest"
 )
 
 type Location struct {
@@ -18,7 +17,7 @@ type Location struct {
 	Lat              float64               `json:"lat"`
 	Lng              float64               `json:"lng"`
 	Pk               int64                 `json:"pk"`
-	Request          *gorequest.SuperAgent `json:"request"`
+	AgentPool        *utils.SuperAgentPool `json:"-"`
 }
 
 type mediaResponse struct {
@@ -29,9 +28,11 @@ type mediaResponse struct {
 func (location Location) GetRankedMedia() []*Media {
 	url := constants.ROUTES.LocationFeed + strconv.FormatInt(location.Pk, 10) + "/"
 
+	agent := location.AgentPool.Get()
+	defer location.AgentPool.Put(agent)
+
 	_, body, _ := utils.WrapRequest(
-		location.Request.Get(url).
-			Query("rank_token=" + utils.GenerateUUID()))
+		agent.Get(url).Query("rank_token=" + utils.GenerateUUID()))
 
 	var resp mediaResponse
 	json.Unmarshal([]byte(body), &resp)
@@ -42,9 +43,11 @@ func (location Location) GetRankedMedia() []*Media {
 func (location Location) GetRecentMedia() []*Media {
 	url := constants.ROUTES.LocationFeed + strconv.FormatInt(location.Pk, 10) + "/"
 
+	agent := location.AgentPool.Get()
+	defer location.AgentPool.Put(agent)
+
 	_, body, _ := utils.WrapRequest(
-		location.Request.Get(url).
-			Query("rank_token=" + utils.GenerateUUID()))
+		agent.Get(url).Query("rank_token=" + utils.GenerateUUID()))
 
 	var resp mediaResponse
 	json.Unmarshal([]byte(body), &resp)
