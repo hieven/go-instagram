@@ -11,8 +11,9 @@ import (
 
 // Inbox type
 type Inbox struct {
-	Threads []*Thread `json:"threads"`
-	Request *gorequest.SuperAgent
+	Threads   []*Thread `json:"threads"`
+	AgentPool *utils.SuperAgentPool
+	Request   *gorequest.SuperAgent
 }
 
 // Parsing instagram response
@@ -28,7 +29,10 @@ type approveAllThreadRequestSchema struct {
 
 // GetFeed returns you inbox feed
 func (inbox *Inbox) GetFeed() (threads []*Thread) {
-	_, body, _ := utils.WrapRequest(inbox.Request.Get(constants.ROUTES.Inbox))
+	agent := inbox.AgentPool.Get()
+	defer inbox.AgentPool.Put(agent)
+
+	_, body, _ := utils.WrapRequest(agent.Get(constants.ROUTES.Inbox))
 
 	var resp feedResponse
 	json.Unmarshal([]byte(body), &resp)
@@ -41,14 +45,14 @@ func (inbox *Inbox) GetFeed() (threads []*Thread) {
 	inbox.Threads = resp.Inbox.Threads
 
 	for _, thread := range inbox.Threads {
-		thread.Request = inbox.Request
+		thread.AgentPool = inbox.AgentPool
 
 		for _, item := range thread.Items {
 			// if item.Location == {} {
 			// 	continue
 			// }
 
-			item.Location.Request = inbox.Request
+			item.Location.AgentPool = inbox.AgentPool
 		}
 	}
 
@@ -63,8 +67,11 @@ func (inbox *Inbox) ApproveAllThreads() {
 
 	jsonData, _ := json.Marshal(payload)
 
+	agent := inbox.AgentPool.Get()
+	defer inbox.AgentPool.Put(agent)
+
 	_, body, _ := utils.WrapRequest(
-		inbox.Request.Post(constants.ROUTES.ThreadsApproveAll).
+		agent.Post(constants.ROUTES.ThreadsApproveAll).
 			Type("multipart").
 			Send(string(jsonData)))
 
