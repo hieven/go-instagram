@@ -1,5 +1,5 @@
-hash: 4b8eaa3d5d5729c04834a3b5b8bacc2ade86159a140291b10801e603fd6f9b30
-updated: 2016-09-22T00:43:57.258205479+08:00
+hash: f9f517a8385ec16f29a5356f1a48600eedb3cdd2a475bfb212bc4a02caa5b610
+updated: 2016-11-11T00:45:03.246593948+08:00
 imports:
 - name: github.com/bitly/go-simplejson
   version: aabad6e819789e569bd6aabf444c935aa9ba1e44
@@ -8,9 +8,11 @@ imports:
 - name: github.com/parnurzeal/gorequest
   version: 2aea80ce763523ecc6452e61c3727ae9595a5809
 - name: github.com/satori/go.uuid
-  version: 0aa62d5ddceb50dbcb909d790b5345affd3669b6
+  version: b061729afc07e77a8aa4fad0a2fd840958f1942a
+- name: github.com/stretchr/testify
+  version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
 - name: golang.org/x/net
-  version: 71a035914f99bb58fe82eac0f1289f10963d876c
+  version: 0d8126fc6144eb5257485c59148128691e8ff849
   subpackages:
   - publicsuffix
 testImports: []

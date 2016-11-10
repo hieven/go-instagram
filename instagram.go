@@ -10,7 +10,6 @@ type Instagram struct {
 	Password  string
 	AgentPool *utils.SuperAgentPool
 	Inbox     *models.Inbox
-	Thread    *models.Thread
 }
 
 func Create(username string, password string) (*Instagram, error) {
@@ -25,14 +24,16 @@ func Create(username string, password string) (*Instagram, error) {
 		AgentPool: pool,
 	}
 
-	ig.Login()
+	if err := ig.Login(); err != nil {
+		return nil, err
+	}
 
 	ig.Inbox = &models.Inbox{AgentPool: ig.AgentPool}
 
 	return &ig, nil
 }
 
-func (ig Instagram) Login() {
+func (ig Instagram) Login() error {
 	for i := 0; i < ig.AgentPool.Len(); i++ {
 		uuid := utils.GenerateUUID()
 
@@ -49,6 +50,10 @@ func (ig Instagram) Login() {
 			Agent:             agent,
 		}
 
-		login.Login()
+		if err := login.Login(); err != nil {
+			return err
+		}
 	}
+
+	return nil
 }
