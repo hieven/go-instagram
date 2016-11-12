@@ -12,7 +12,7 @@ install:
   - glide install
 
 script:
-  - go test -v $(glide novendor)
+  - ./go.test.sh
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
