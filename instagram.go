@@ -5,55 +5,19 @@ import (
 	"github.com/hieven/go-instagram/utils"
 )
 
-type Instagram struct {
-	Username  string
-	Password  string
-	AgentPool *utils.SuperAgentPool
-	Inbox     *models.Inbox
-}
-
-func Create(username string, password string) (*Instagram, error) {
+func Create(username string, password string) (*models.Instagram, error) {
 	pool, err := utils.NewSuperAgentPool(1)
 	if err != nil {
 		return nil, err
 	}
 
-	ig := Instagram{
+	ig := &models.Instagram{
 		Username:  username,
 		Password:  password,
 		AgentPool: pool,
 	}
 
-	if err := ig.Login(); err != nil {
-		return nil, err
-	}
+	ig.Inbox = &models.Inbox{Instagram: ig}
 
-	ig.Inbox = &models.Inbox{AgentPool: ig.AgentPool}
-
-	return &ig, nil
-}
-
-func (ig Instagram) Login() error {
-	for i := 0; i < ig.AgentPool.Len(); i++ {
-		uuid := utils.GenerateUUID()
-
-		agent := ig.AgentPool.Get()
-		defer ig.AgentPool.Put(agent)
-
-		login := models.Login{
-			Csrftoken:         "missing",
-			DeviceID:          "android-b256317fd493b848",
-			UUID:              uuid,
-			UserName:          ig.Username,
-			Password:          ig.Password,
-			LoginAttemptCount: 0,
-			Agent:             agent,
-		}
-
-		if err := login.Login(); err != nil {
-			return err
-		}
-	}
-
-	return nil
+	return ig, nil
 }
