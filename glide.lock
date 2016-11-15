@@ -1,8 +1,10 @@
-hash: f9f517a8385ec16f29a5356f1a48600eedb3cdd2a475bfb212bc4a02caa5b610
-updated: 2016-11-11T00:45:03.246593948+08:00
+hash: 8b3db0e0543d5c673649556cb55aa4c371c9b0d03935d9ae50e9c59f167261b1
+updated: 2016-11-15T01:47:23.122800243+08:00
 imports:
 - name: github.com/bitly/go-simplejson
   version: aabad6e819789e569bd6aabf444c935aa9ba1e44
+- name: github.com/jarcoal/httpmock
+  version: 145b10d659265440f062c31ea15326166bae56ee
 - name: github.com/moul/http2curl
   version: b1479103caacaa39319f75e7f57fc545287fca0d
 - name: github.com/parnurzeal/gorequest
@@ -11,8 +13,20 @@ imports:
   version: b061729afc07e77a8aa4fad0a2fd840958f1942a
 - name: github.com/stretchr/testify
   version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
+  subpackages:
+  - assert
+  - require
+  - suite
 - name: golang.org/x/net
   version: 0d8126fc6144eb5257485c59148128691e8ff849
   subpackages:
   - publicsuffix
-testImports: []
+testImports:
+- name: github.com/davecgh/go-spew
+  version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
+  subpackages:
+  - spew
+- name: github.com/pmezard/go-difflib
+  version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
+  subpackages:
+  - difflib
