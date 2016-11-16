@@ -3,6 +3,7 @@ package models
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 
 	"github.com/hieven/go-instagram/constants"
 	"github.com/hieven/go-instagram/utils"
@@ -37,6 +38,16 @@ type loggedInUser struct {
 	Pk int64 `json:"pk"`
 }
 
+type likeRequest struct {
+	MediaID string `json:"media_id"`
+	Src     string `json:"src"`
+	loginRequest
+}
+
+type likeResponse struct {
+	DefaultResponse
+}
+
 func (ig *Instagram) Login() error {
 	for i := 0; i < ig.AgentPool.Len(); i++ {
 		igSigKeyVersion, signedBody := ig.CreateSignature()
@@ -64,6 +75,69 @@ func (ig *Instagram) Login() error {
 
 		// store user info
 		ig.Pk = resp.LoggedInUser.Pk
+	}
+
+	return nil
+}
+
+func (ig *Instagram) Like(mediaID string) error {
+	url := constants.GetURL("Like", struct{ ID string }{ID: mediaID})
+
+	igSigKeyVersion, signedBody := ig.CreateSignature()
+
+	payload := likeRequest{
+		MediaID: mediaID,
+		Src:     "profile",
+	}
+	payload.IgSigKeyVersion = igSigKeyVersion
+	payload.SignedBody = signedBody
+
+	jsonData, _ := json.Marshal(payload)
+
+	agent := ig.AgentPool.Get()
+	defer ig.AgentPool.Put(agent)
+
+	_, body, _ := ig.SendRequest(agent.Post(url).
+		Type("multipart").
+		Send(string(jsonData)))
+
+	var resp loginResponse
+	json.Unmarshal([]byte(body), &resp)
+
+	if resp.Status == "fail" {
+		return errors.New(resp.Message)
+	}
+
+	return nil
+}
+
+func (ig *Instagram) Unlike(mediaID string) error {
+	url := constants.GetURL("Unlike", struct{ ID string }{ID: mediaID})
+
+	igSigKeyVersion, signedBody := ig.CreateSignature()
+
+	payload := likeRequest{
+		MediaID: mediaID,
+		Src:     "profile",
+	}
+	payload.IgSigKeyVersion = igSigKeyVersion
+	payload.SignedBody = signedBody
+
+	jsonData, _ := json.Marshal(payload)
+
+	agent := ig.AgentPool.Get()
+	defer ig.AgentPool.Put(agent)
+
+	_, body, _ := ig.SendRequest(agent.Post(url).
+		Type("multipart").
+		Send(string(jsonData)))
+	fmt.Println(url)
+	fmt.Println(body)
+	var resp loginResponse
+	json.Unmarshal([]byte(body), &resp)
+
+	if resp.Status == "fail" {
+		return errors.New(resp.Message)
 	}
 
 	return nil
