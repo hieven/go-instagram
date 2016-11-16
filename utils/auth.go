@@ -27,3 +27,7 @@ func GenerateUUID() (uuid string) {
 
 	return uuid
 }
+
+func GenerateRankToken(userID string) string {
+	return userID + "_" + GenerateUUID()
+}
