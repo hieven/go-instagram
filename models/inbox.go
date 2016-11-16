@@ -15,10 +15,10 @@ type Inbox struct {
 }
 
 // Parsing instagram response
-type feedResponse struct {
+type inboxFeedResponse struct {
 	Status  string
 	Message string
-	Inbox   Inbox `json:inbox`
+	Inbox   Inbox `json:"inbox"`
 }
 
 type approveAllThreadRequest struct {
@@ -37,7 +37,7 @@ func (inbox *Inbox) GetFeed() ([]*Thread, error) {
 
 	_, body, _ := inbox.Instagram.SendRequest(agent.Get(constants.ROUTES.Inbox))
 
-	var resp feedResponse
+	var resp inboxFeedResponse
 	json.Unmarshal([]byte(body), &resp)
 
 	if resp.Status == "fail" {

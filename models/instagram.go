@@ -10,27 +10,38 @@ import (
 )
 
 type Instagram struct {
-	Username  string
-	Password  string
-	AgentPool *utils.SuperAgentPool
-	Inbox     *Inbox
+	Username string
+	Password string
+	loggedInUser
+	AgentPool    *utils.SuperAgentPool
+	Inbox        *Inbox
+	TimelineFeed *TimelineFeed
 }
 
-type loginRequestSchema struct {
+type DefaultResponse struct {
+	Status  string `json:"status"`
+	Message string `json:"message"`
+}
+
+type loginRequest struct {
 	SignedBody      string `json:"signed_body"`
 	IgSigKeyVersion string `json:"ig_sig_key_version"`
 }
 
-type loginResponseSchema struct {
-	Status  string `json:"status"`
-	Message string `json:"message"`
+type loginResponse struct {
+	LoggedInUser loggedInUser `json:"logged_in_user"`
+	DefaultResponse
+}
+
+type loggedInUser struct {
+	Pk int64 `json:"pk"`
 }
 
 func (ig *Instagram) Login() error {
 	for i := 0; i < ig.AgentPool.Len(); i++ {
 		igSigKeyVersion, signedBody := ig.CreateSignature()
 
-		payload := loginRequestSchema{
+		payload := loginRequest{
 			IgSigKeyVersion: igSigKeyVersion,
 			SignedBody:      signedBody,
 		}
@@ -44,12 +55,15 @@ func (ig *Instagram) Login() error {
 			Type("multipart").
 			Send(string(jsonData)))
 
-		var resp loginResponseSchema
+		var resp loginResponse
 		json.Unmarshal([]byte(body), &resp)
 
 		if resp.Status == "fail" {
 			return errors.New(resp.Message)
 		}
+
+		// store user info
+		ig.Pk = resp.LoggedInUser.Pk
 	}
 
 	return nil
