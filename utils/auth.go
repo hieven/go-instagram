@@ -28,6 +28,12 @@ func GenerateUUID() (uuid string) {
 	return uuid
 }
 
+type RankTokenGenerator struct{}
+
+func (generator RankTokenGenerator) GenerateRankToken(userID string) string {
+	return userID + "_" + GenerateUUID()
+}
+
 func GenerateRankToken(userID string) string {
 	return userID + "_" + GenerateUUID()
 }

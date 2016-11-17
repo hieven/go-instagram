@@ -6,14 +6,18 @@ import (
 	"strconv"
 
 	"github.com/hieven/go-instagram/constants"
-	"github.com/hieven/go-instagram/utils"
 )
+
+type RankTokenGenerator interface {
+	GenerateRankToken(string) string
+}
 
 type TimelineFeed struct {
 	Items         []*FeedItem `json:"feed_items"`
 	MoreAvailable bool        `json:"-"`
 	Cursor        string      `json:"-"`
 	Instagram     *Instagram  `json:"-"`
+	RankTokenGenerator
 }
 
 type FeedItem struct {
@@ -64,16 +68,22 @@ func (feed *TimelineFeed) GetCursor() string {
 	return feed.Cursor
 }
 
-func (feed *TimelineFeed) isMoreAvailable() bool {
+func (feed *TimelineFeed) IsMoreAvailable() bool {
 	return feed.MoreAvailable
 }
 
 func (feed *TimelineFeed) Get() ([]*FeedItem, error) {
 	userID := strconv.FormatInt(feed.Instagram.Pk, 10)
 
-	rankToken := utils.GenerateRankToken(userID)
+	rankToken := feed.GenerateRankToken(userID)
 
-	url := constants.ROUTES.TimelineFeed + "&rank_token=" + rankToken + "&max_id=" + feed.Cursor
+	url := constants.GetURL("TimelineFeed", struct {
+		MaxID     string
+		RankToken string
+	}{
+		MaxID:     feed.Cursor,
+		RankToken: rankToken,
+	})
 
 	agent := feed.Instagram.AgentPool.Get()
 	defer feed.Instagram.AgentPool.Put(agent)

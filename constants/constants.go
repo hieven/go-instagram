@@ -58,7 +58,7 @@ var ROUTES = struct {
 	LocationFeed:         API_ENDPOINT + "feed/location/",
 	ThreadsApproveAll:    API_ENDPOINT + "direct_v2/threads/approve_all/",
 	ThreadsShow:          API_ENDPOINT + "direct_v2/threads/",
-	TimelineFeed:         API_ENDPOINT + "feed/timeline/?ranked_content=true",
+	TimelineFeed:         API_ENDPOINT + "feed/timeline/?rank_token={{.RankToken}}{{if .MaxID}}&max_id={{.MaxID}}{{end}}&ranked_content=true",
 	Like:                 API_ENDPOINT + "media/{{.ID}}/like/",
 	Unlike:               API_ENDPOINT + "media/{{.ID}}/unlike/",
 }
