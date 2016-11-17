@@ -18,7 +18,10 @@ func Create(username string, password string) (*models.Instagram, error) {
 	}
 
 	ig.Inbox = &models.Inbox{Instagram: ig}
-	ig.TimelineFeed = &models.TimelineFeed{Instagram: ig}
+	ig.TimelineFeed = &models.TimelineFeed{
+		Instagram:          ig,
+		RankTokenGenerator: utils.RankTokenGenerator{},
+	}
 
 	return ig, nil
 }
