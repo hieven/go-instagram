@@ -10,7 +10,8 @@ $ go get github.com/hieven/go-instagram
 
 ## Documentation
 
-To be Continued
+- [![GoDoc](https://godoc.org/github.com/hieven/go-instagram?status.svg)](https://godoc.org/github.com/hieven/go-instagram) Instagram
+- [![GoDoc](https://godoc.org/github.com/hieven/go-instagram/models?status.svg)](https://godoc.org/github.com/hieven/go-instagram/models) Instagram Models
 
 ## Features
 
