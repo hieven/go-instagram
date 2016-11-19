@@ -9,7 +9,6 @@ import (
 	"github.com/jarcoal/httpmock"
 	"github.com/parnurzeal/gorequest"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -48,7 +47,6 @@ func (suite *InstagramTestSuite) TearDownTest() {
 }
 
 func (suite *InstagramTestSuite) TestInstagramLoginSuccess() {
-	assert := assert.New(suite.T())
 	ig := suite.ig
 
 	responder := testUtils.NewMockResponder(200, "loginSuccess")
@@ -56,52 +54,102 @@ func (suite *InstagramTestSuite) TestInstagramLoginSuccess() {
 
 	err := ig.Login()
 
-	assert.Nil(err)
+	suite.Nil(err)
 }
 
 func (suite *InstagramTestSuite) TestInstagramLoginFailed() {
-	assert := assert.New(suite.T())
 	ig := suite.ig
 
-	responder := testUtils.NewMockResponder(400, "loginIncorrectPassword")
-	httpmock.RegisterResponder("POST", constants.ROUTES.Login, responder)
+	tests := []struct {
+		ResponseTemplate string
+		ExpecredError    string
+	}{
+		{
+			ResponseTemplate: "loginIncorrectPassword",
+			ExpecredError:    "The password you entered is incorrect. Please try again.",
+		},
+		{
+			ResponseTemplate: "loginIncorrectUsername",
+			ExpecredError:    "The username you entered doesn't appear to belong to an account. Please check your username and try again.",
+		},
+		{
+			ResponseTemplate: "loginMissingPassword",
+			ExpecredError:    "Invalid Parameters",
+		},
+		{
+			ResponseTemplate: "loginInvalidParameters",
+			ExpecredError:    "Invalid Parameters",
+		},
+	}
 
-	err := ig.Login()
+	for _, test := range tests {
+		responder := testUtils.NewMockResponder(400, test.ResponseTemplate)
+		httpmock.RegisterResponder("POST", constants.ROUTES.Login, responder)
 
-	assert.EqualError(err, "The password you entered is incorrect. Please try again.")
+		err := ig.Login()
 
-	httpmock.Reset()
+		suite.EqualError(err, test.ExpecredError)
 
-	responder = testUtils.NewMockResponder(400, "loginIncorrectUsername")
-	httpmock.RegisterResponder("POST", constants.ROUTES.Login, responder)
+		httpmock.Reset()
+	}
+}
 
-	err = ig.Login()
+func (suite *InstagramTestSuite) TestInstagramLikeSuccess() {
+	ig := suite.ig
+	mediaID := "foo"
+	url := constants.GetURL("Like", struct{ ID string }{ID: mediaID})
 
-	assert.EqualError(err, "The username you entered doesn't appear to belong to an account. Please check your username and try again.")
+	responder := testUtils.NewMockResponder(200, "likeSuccess")
+	httpmock.RegisterResponder("POST", url, responder)
 
-	httpmock.Reset()
+	err := ig.Like(mediaID)
 
-	responder = testUtils.NewMockResponder(400, "loginMissingPassword")
-	httpmock.RegisterResponder("POST", constants.ROUTES.Login, responder)
+	suite.Nil(err)
+}
 
-	err = ig.Login()
+func (suite *InstagramTestSuite) TestInstagramLikeLoginRequired() {
+	ig := suite.ig
+	mediaID := "foo"
+	url := constants.GetURL("Like", struct{ ID string }{ID: mediaID})
 
-	assert.EqualError(err, "Invalid Parameters")
+	responder := testUtils.NewMockResponder(400, "loginRequired")
+	httpmock.RegisterResponder("POST", url, responder)
 
-	httpmock.Reset()
+	err := ig.Like(mediaID)
 
-	responder = testUtils.NewMockResponder(400, "loginInvalidParameters")
-	httpmock.RegisterResponder("POST", constants.ROUTES.Login, responder)
+	suite.EqualError(err, "login_required")
+}
 
-	err = ig.Login()
+func (suite *InstagramTestSuite) TestInstagramUnlikeSuccess() {
+	ig := suite.ig
+	mediaID := "foo"
+	url := constants.GetURL("Unlike", struct{ ID string }{ID: mediaID})
 
-	assert.EqualError(err, "Invalid Parameters")
+	responder := testUtils.NewMockResponder(200, "unlikeSuccess")
+	httpmock.RegisterResponder("POST", url, responder)
 
-	httpmock.Reset()
+	err := ig.Unlike(mediaID)
+
+	suite.Nil(err)
+}
+
+func (suite *InstagramTestSuite) TestInstagramUnlikeLoginRequired() {
+	ig := suite.ig
+	mediaID := "foo"
+	url := constants.GetURL("Unlike", struct{ ID string }{ID: mediaID})
+
+	responder := testUtils.NewMockResponder(400, "loginRequired")
+	httpmock.RegisterResponder("POST", url, responder)
+
+	err := ig.Unlike(mediaID)
+
+	suite.EqualError(err, "login_required")
 }
 
 func (suite *InstagramTestSuite) TestInstagramCreateSignature() {
+	// TODO: TestInstagramCreateSignature
 }
 
 func (suite *InstagramTestSuite) TestInstagramSendRequest() {
+	// TODO: TestInstagramSendRequest
 }

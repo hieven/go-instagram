@@ -3,7 +3,6 @@ package models
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 
 	"github.com/hieven/go-instagram/constants"
 	"github.com/hieven/go-instagram/utils"
@@ -131,8 +130,7 @@ func (ig *Instagram) Unlike(mediaID string) error {
 	_, body, _ := ig.SendRequest(agent.Post(url).
 		Type("multipart").
 		Send(string(jsonData)))
-	fmt.Println(url)
-	fmt.Println(body)
+
 	var resp loginResponse
 	json.Unmarshal([]byte(body), &resp)
 
