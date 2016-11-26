@@ -37,6 +37,10 @@ ig.TimelineFeed.Get() // get timeline feed
 ig.Like(ig.TimelineFeed.Items[0].ID) // like the first item of the feed
 ```
 
+For more complicated one, please check out 
+
+[go-instagram-example](https://github.com/hieven/go-instagram-example)
+
 ## License
 
 MIT
