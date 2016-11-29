@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/hieven/go-instagram.svg?branch=master)](https://travis-ci.org/hieven/go-instagram)[![codecov](https://codecov.io/gh/hiEven/go-instagram/branch/master/graph/badge.svg)](https://codecov.io/gh/hiEven/go-instagram)
 
+This project is for study and personal use only. We hold no responsibilty of any use that violate Instagram's terms and conditions.
+
 ## Installation
 
 ```sh
@@ -15,15 +17,15 @@ $ go get github.com/hieven/go-instagram
 
 ## Features
 
-This is still in an early stage. Welcome for any pull request if you find something you want but not in this repo yet.
-
-Currently you can do
+You can use this repo to:
 - like/unlike media
 - get timeline feed
-- get ranked medias / recent medias of location
-- get inbox message
+- get ranked media / recent media of a location
+- get inbox messages
 - broadcast to any inbox thread
 - approve pending inbox thread
+
+The project is still in its early stage. Any pull request to extend its functionalities is most welcome.
 
 ## Example
 
@@ -37,19 +39,11 @@ ig.TimelineFeed.Get() // get timeline feed
 ig.Like(ig.TimelineFeed.Items[0].ID) // like the first item of the feed
 ```
 
-For more complicated one, please check out 
-
-[go-instagram-example](https://github.com/hieven/go-instagram-example)
+Find more complex examples on [go-instagram-example](https://github.com/hieven/go-instagram-example)
 
 ## License
 
 MIT
-
-## Terms and Conditions
-
-- You shouldn't use this repo for spam, massive sending or any malicious activity.
-- We don't give support to anyone who wants to violate this terms and conditions.
-- We reserve the right to block any user who doesn't meet the conditions.
 
 ## Similar Projects
 
