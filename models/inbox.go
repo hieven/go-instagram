@@ -10,8 +10,10 @@ import (
 
 // Inbox type
 type Inbox struct {
-	Threads   []*Thread `json:"threads"`
-	Instagram *Instagram
+	Threads      []*Thread  `json:"threads"`
+	HasOlder     bool       `json:"has_older"`
+	OldestCursor string     `json:"oldest_cursor"`
+	Instagram    *Instagram `json:"-"`
 }
 
 // Parsing instagram response
@@ -30,12 +32,30 @@ type approveAllThreadResponse struct {
 	Message string
 }
 
+func (inbox *Inbox) GetCursor() string {
+	return inbox.OldestCursor
+}
+
+func (inbox *Inbox) SetCursor(cursor string) {
+	inbox.OldestCursor = cursor
+}
+
+func (inbox *Inbox) IsMoreAvailalbe() bool {
+	return inbox.HasOlder
+}
+
 // GetFeed returns you inbox feed
 func (inbox *Inbox) GetFeed() ([]*Thread, error) {
+	url := constants.GetURL("Inbox", struct {
+		Cursor string
+	}{
+		Cursor: inbox.GetCursor(),
+	})
+
 	agent := inbox.Instagram.AgentPool.Get()
 	defer inbox.Instagram.AgentPool.Put(agent)
 
-	_, body, _ := inbox.Instagram.SendRequest(agent.Get(constants.ROUTES.Inbox))
+	_, body, _ := inbox.Instagram.SendRequest(agent.Get(url))
 
 	var resp inboxFeedResponse
 	json.Unmarshal([]byte(body), &resp)
@@ -44,7 +64,12 @@ func (inbox *Inbox) GetFeed() ([]*Thread, error) {
 		return nil, errors.New(resp.Message)
 	}
 
+	inbox.HasOlder = resp.Inbox.HasOlder
 	inbox.Threads = resp.Inbox.Threads
+
+	if inbox.HasOlder {
+		inbox.SetCursor(resp.Inbox.OldestCursor)
+	}
 
 	for _, thread := range inbox.Threads {
 		thread.Instagram = inbox.Instagram

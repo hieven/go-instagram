@@ -8,8 +8,9 @@ import (
 )
 
 type SuperAgentPool struct {
-	mu     sync.Mutex
-	agents chan *gorequest.SuperAgent
+	Capacity int
+	Mu       sync.Mutex
+	Agents   chan *gorequest.SuperAgent
 }
 
 func NewSuperAgentPool(capacity int) (*SuperAgentPool, error) {
@@ -18,23 +19,24 @@ func NewSuperAgentPool(capacity int) (*SuperAgentPool, error) {
 	}
 
 	pool := &SuperAgentPool{
-		agents: make(chan *gorequest.SuperAgent, capacity),
+		Capacity: capacity,
+		Agents:   make(chan *gorequest.SuperAgent, capacity),
 	}
 
-	for i := 0; i < capacity; i++ {
+	for i := 0; i < pool.Capacity; i++ {
 		agent := gorequest.New()
 		if agent == nil {
 			return nil, errors.New("unable to create gorequest.SuperAgent")
 		}
 
-		pool.agents <- agent
+		pool.Agents <- agent
 	}
 
 	return pool, nil
 }
 
 func (p *SuperAgentPool) Get() *gorequest.SuperAgent {
-	agent := <-p.agents
+	agent := <-p.Agents
 	return agent
 }
 
@@ -43,10 +45,10 @@ func (p *SuperAgentPool) Put(agent *gorequest.SuperAgent) error {
 		return errors.New("input agent is nil")
 	}
 
-	p.agents <- agent
+	p.Agents <- agent
 	return nil
 }
 
 func (p *SuperAgentPool) Len() int {
-	return len(p.agents)
+	return len(p.Agents)
 }

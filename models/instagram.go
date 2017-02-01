@@ -3,6 +3,7 @@ package models
 import (
 	"encoding/json"
 	"errors"
+	"time"
 
 	"github.com/hieven/go-instagram/constants"
 	"github.com/hieven/go-instagram/utils"
@@ -10,8 +11,9 @@ import (
 )
 
 type Instagram struct {
-	Username string
-	Password string
+	Username      string
+	Password      string
+	LoginInterval int
 	loggedInUser
 	AgentPool    *utils.SuperAgentPool
 	Inbox        *Inbox
@@ -23,6 +25,10 @@ type DefaultResponse struct {
 	Message string `json:"message"`
 }
 
+type loggedInUser struct {
+	Pk int64 `json:"pk"`
+}
+
 type loginRequest struct {
 	SignedBody      string `json:"signed_body"`
 	IgSigKeyVersion string `json:"ig_sig_key_version"`
@@ -31,10 +37,6 @@ type loginRequest struct {
 type loginResponse struct {
 	LoggedInUser loggedInUser `json:"logged_in_user"`
 	DefaultResponse
-}
-
-type loggedInUser struct {
-	Pk int64 `json:"pk"`
 }
 
 type likeRequest struct {
@@ -48,7 +50,7 @@ type likeResponse struct {
 }
 
 func (ig *Instagram) Login() error {
-	for i := 0; i < ig.AgentPool.Len(); i++ {
+	for i := 0; i < ig.AgentPool.Capacity; i++ {
 		igSigKeyVersion, signedBody := ig.CreateSignature()
 
 		payload := loginRequest{
@@ -58,10 +60,12 @@ func (ig *Instagram) Login() error {
 
 		jsonData, _ := json.Marshal(payload)
 
+		url := constants.GetURL("Login", nil)
+
 		agent := ig.AgentPool.Get()
 		defer ig.AgentPool.Put(agent)
 
-		_, body, _ := ig.SendRequest(agent.Post(constants.ROUTES.Login).
+		_, body, _ := ig.SendRequest(agent.Post(url).
 			Type("multipart").
 			Send(string(jsonData)))
 
@@ -74,6 +78,8 @@ func (ig *Instagram) Login() error {
 
 		// store user info
 		ig.Pk = resp.LoggedInUser.Pk
+
+		time.Sleep(time.Duration(ig.LoginInterval) * time.Millisecond)
 	}
 
 	return nil
