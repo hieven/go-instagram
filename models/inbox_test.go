@@ -51,8 +51,13 @@ func (suite *InboxTestSuite) TestGetFeedSuccess() {
 	assert := assert.New(suite.T())
 	inbox := suite.inbox
 
+	url := constants.GetURL("Inbox", struct {
+		Cursor string
+	}{
+		Cursor: inbox.GetCursor(),
+	})
 	responder := testUtils.NewMockResponder(200, "inboxFeed")
-	httpmock.RegisterResponder("GET", constants.ROUTES.Inbox, responder)
+	httpmock.RegisterResponder("GET", url, responder)
 
 	threads, err := inbox.GetFeed()
 
@@ -64,8 +69,13 @@ func (suite *InboxTestSuite) TestGetFeedLoginRequired() {
 	assert := assert.New(suite.T())
 	inbox := suite.inbox
 
+	url := constants.GetURL("Inbox", struct {
+		Cursor string
+	}{
+		Cursor: inbox.GetCursor(),
+	})
 	responder := testUtils.NewMockResponder(400, "loginRequired")
-	httpmock.RegisterResponder("GET", constants.ROUTES.Inbox, responder)
+	httpmock.RegisterResponder("GET", url, responder)
 
 	threads, err := inbox.GetFeed()
 

@@ -12,11 +12,13 @@ const (
 	APP_VERSION = "9.7.0"
 )
 
-var HOSTNAME = "i.instagram.com"
-var WEB_HOSTNAME = "www.instagram.com"
-var HOST = "https://" + HOSTNAME + "/"
-var WEBHOST = "https://" + WEB_HOSTNAME + "/"
-var API_ENDPOINT = HOST + "api/v1/"
+var (
+	HOSTNAME     = "i.instagram.com"
+	WEB_HOSTNAME = "www.instagram.com"
+	HOST         = "https://" + HOSTNAME + "/"
+	WEBHOST      = "https://" + WEB_HOSTNAME + "/"
+	API_ENDPOINT = HOST + "api/v1/"
+)
 
 func GetURL(name string, data interface{}) string {
 	t := template.New("url template")
@@ -53,7 +55,7 @@ var ROUTES = struct {
 	WEBHOST:      WEBHOST,
 
 	ThreadsBroadcastText: API_ENDPOINT + "direct_v2/threads/broadcast/text/",
-	Inbox:                API_ENDPOINT + "direct_v2/inbox/",
+	Inbox:                API_ENDPOINT + "direct_v2/inbox/{{if .Cursor}}?cursor={{.Cursor}}{{end}}",
 	Login:                API_ENDPOINT + "accounts/login/",
 	LocationFeed:         API_ENDPOINT + "feed/location/",
 	ThreadsApproveAll:    API_ENDPOINT + "direct_v2/threads/approve_all/",
