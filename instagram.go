@@ -6,18 +6,27 @@ import (
 )
 
 func Create(username string, password string) (*models.Instagram, error) {
-	pool, err := utils.NewSuperAgentPool(1)
+	return BulkCreate(username, password, 1, 0)
+}
+
+func BulkCreate(username string, password string, capacity int, loginInterval int) (*models.Instagram, error) {
+	pool, err := utils.NewSuperAgentPool(capacity)
+
 	if err != nil {
 		return nil, err
 	}
 
 	ig := &models.Instagram{
-		Username:  username,
-		Password:  password,
-		AgentPool: pool,
+		Username:      username,
+		Password:      password,
+		LoginInterval: loginInterval,
+		AgentPool:     pool,
 	}
 
-	ig.Inbox = &models.Inbox{Instagram: ig}
+	ig.Inbox = &models.Inbox{
+		Instagram: ig,
+	}
+
 	ig.TimelineFeed = &models.TimelineFeed{
 		Instagram:          ig,
 		RankTokenGenerator: utils.RankTokenGenerator{},
