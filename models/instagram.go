@@ -5,19 +5,18 @@ import (
 	"errors"
 	"time"
 
+	"github.com/hieven/go-instagram/config"
 	"github.com/hieven/go-instagram/constants"
 	"github.com/hieven/go-instagram/utils"
 	"github.com/parnurzeal/gorequest"
 )
 
 type Instagram struct {
-	Username      string
-	Password      string
-	LoginInterval int
-	loggedInUser
+	Config       *config.Config
 	AgentPool    *utils.SuperAgentPool
 	Inbox        *Inbox
 	TimelineFeed *TimelineFeed
+	loggedInUser
 }
 
 type DefaultResponse struct {
@@ -50,7 +49,7 @@ type likeResponse struct {
 }
 
 func (ig *Instagram) Login() error {
-	for i := 0; i < ig.AgentPool.Capacity; i++ {
+	for i := 0; i < ig.Config.Capacity; i++ {
 		igSigKeyVersion, signedBody := ig.CreateSignature()
 
 		payload := loginRequest{
@@ -79,7 +78,7 @@ func (ig *Instagram) Login() error {
 		// store user info
 		ig.Pk = resp.LoggedInUser.Pk
 
-		time.Sleep(time.Duration(ig.LoginInterval) * time.Millisecond)
+		time.Sleep(ig.Config.LoginInterval)
 	}
 
 	return nil
@@ -159,8 +158,8 @@ func (ig *Instagram) CreateSignature() (sigVersion string, signedBody string) {
 		Csrftoken:         "missing",
 		DeviceID:          "android-b256317fd493b848",
 		UUID:              utils.GenerateUUID(),
-		UserName:          ig.Username,
-		Password:          ig.Password,
+		UserName:          ig.Config.Username,
+		Password:          ig.Config.Password,
 		LoginAttemptCount: 0,
 	}
 

@@ -3,6 +3,7 @@ package models_test
 import (
 	"testing"
 
+	"github.com/hieven/go-instagram/config"
 	"github.com/hieven/go-instagram/constants"
 	. "github.com/hieven/go-instagram/models"
 	"github.com/hieven/go-instagram/testUtils"
@@ -26,9 +27,14 @@ func TestInstagramSuite(t *testing.T) {
 func (suite *InstagramTestSuite) SetupSuite() {
 	gorequest.DisableTransportSwap = true
 
-	suite.ig = &Instagram{
+	config := &config.Config{
 		Username: "even",
-		Password: "qweasd",
+		Password: "password",
+		Capacity: 1,
+	}
+
+	suite.ig = &Instagram{
+		Config: config,
 	}
 }
 

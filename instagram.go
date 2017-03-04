@@ -1,26 +1,40 @@
 package instagram
 
 import (
+	"errors"
+	"time"
+
+	"github.com/hieven/go-instagram/config"
 	"github.com/hieven/go-instagram/models"
 	"github.com/hieven/go-instagram/utils"
 )
 
-func Create(username string, password string) (*models.Instagram, error) {
-	return BulkCreate(username, password, 1, 0)
-}
+func New(config *config.Config) (*models.Instagram, error) {
+	if config.Username == "" {
+		return nil, errors.New("username is required")
+	}
 
-func BulkCreate(username string, password string, capacity int, loginInterval int) (*models.Instagram, error) {
-	pool, err := utils.NewSuperAgentPool(capacity)
+	if config.Password == "" {
+		return nil, errors.New("password is required")
+	}
+
+	if config.Capacity == 0 {
+		config.Capacity = 1
+	}
+
+	if config.LoginInterval == 0 {
+		config.LoginInterval = 1 * time.Second
+	}
+
+	pool, err := utils.NewSuperAgentPool(config.Capacity)
 
 	if err != nil {
 		return nil, err
 	}
 
 	ig := &models.Instagram{
-		Username:      username,
-		Password:      password,
-		LoginInterval: loginInterval,
-		AgentPool:     pool,
+		Config:    config,
+		AgentPool: pool,
 	}
 
 	ig.Inbox = &models.Inbox{
@@ -30,6 +44,10 @@ func BulkCreate(username string, password string, capacity int, loginInterval in
 	ig.TimelineFeed = &models.TimelineFeed{
 		Instagram:          ig,
 		RankTokenGenerator: utils.RankTokenGenerator{},
+	}
+
+	if err := ig.Login(); err != nil {
+		return nil, err
 	}
 
 	return ig, nil
