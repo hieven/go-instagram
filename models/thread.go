@@ -78,10 +78,6 @@ func (thread *Thread) Show() (*Thread, error) {
 	}
 
 	for _, item := range resp.Thread.Items {
-		// if item.Location == nil {
-		// 	continue
-		// }
-
 		item.Location.Instagram = thread.Instagram
 	}
 

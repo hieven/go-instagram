@@ -75,10 +75,6 @@ func (inbox *Inbox) GetFeed() ([]*Thread, error) {
 		thread.Instagram = inbox.Instagram
 
 		for _, item := range thread.Items {
-			// if item.Location == {} {
-			// 	continue
-			// }
-
 			item.Location.Instagram = inbox.Instagram
 		}
 	}
