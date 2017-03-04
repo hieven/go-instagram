@@ -7,9 +7,9 @@ import (
 )
 
 const (
-	SIG_KEY     = "2f6dcdf76deb0d3fd008886d032162a79b88052b5f50538c1ee93c4fe7d02e60"
+	SIG_KEY     = "68a04945eb02970e2e8d15266fc256f7295da123e123f44b88f09d594a5902df"
 	SIG_VERSION = "4"
-	APP_VERSION = "9.7.0"
+	APP_VERSION = "10.8.0"
 )
 
 var (
