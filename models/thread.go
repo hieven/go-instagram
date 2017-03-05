@@ -9,12 +9,11 @@ import (
 )
 
 type Thread struct {
-	ID             string         `json:"thread_id"`
-	Users          []*User        `json:"users"`
-	Items          []*ThreadItem  `json:"items"`
-	ImageVersions2 ImageVersions2 `json:"image_versions2"`
-	HasNewer       bool           `json:"has_newer"`
-	Instagram      *Instagram     `json:"-"`
+	ID        string        `json:"thread_id"`
+	Users     []*User       `json:"users"`
+	Items     []*ThreadItem `json:"items"`
+	HasNewer  bool          `json:"has_newer"`
+	Instagram *Instagram    `json:"-"`
 }
 
 type broadcastTextRequest struct {
