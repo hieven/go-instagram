@@ -2,40 +2,33 @@ package instagram
 
 import (
 	"errors"
-	"time"
 
 	"github.com/hieven/go-instagram/config"
 	"github.com/hieven/go-instagram/models"
+	"github.com/hieven/go-instagram/session"
 	"github.com/hieven/go-instagram/utils"
 )
 
-func New(config *config.Config) (*models.Instagram, error) {
-	if config.Username == "" {
+func New(cnf *config.Config) (ig *models.Instagram, err error) {
+	if cnf.Username == "" {
 		return nil, errors.New("username is required")
 	}
 
-	if config.Password == "" {
+	if cnf.Password == "" {
 		return nil, errors.New("password is required")
 	}
 
-	if config.Capacity == 0 {
-		config.Capacity = 1
+	if cnf.Capacity == 0 {
+		cnf.Capacity = 1
 	}
 
-	if config.LoginInterval == 0 {
-		config.LoginInterval = 1 * time.Second
+	ig = &models.Instagram{
+		Config: cnf,
 	}
 
-	pool, err := utils.NewSuperAgentPool(config.Capacity)
+	ig.AgentPool, err = utils.NewSuperAgentPool(cnf.Capacity)
 
-	if err != nil {
-		return nil, err
-	}
-
-	ig := &models.Instagram{
-		Config:    config,
-		AgentPool: pool,
-	}
+	ig.Session, err = session.NewSession(cnf)
 
 	ig.Inbox = &models.Inbox{
 		Instagram: ig,
@@ -46,7 +39,9 @@ func New(config *config.Config) (*models.Instagram, error) {
 		RankTokenGenerator: utils.RankTokenGenerator{},
 	}
 
-	if err := ig.Login(); err != nil {
+	err = ig.Login()
+
+	if err != nil {
 		return nil, err
 	}
 

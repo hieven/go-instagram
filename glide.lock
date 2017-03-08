@@ -1,14 +1,18 @@
-hash: 8b3db0e0543d5c673649556cb55aa4c371c9b0d03935d9ae50e9c59f167261b1
-updated: 2016-11-15T01:47:23.122800243+08:00
+hash: 399e3b5eb1a3465919547eabd9e2b870da83d353de4f08483f02b485315d33b9
+updated: 2017-03-08T22:01:32.589758102+08:00
 imports:
 - name: github.com/bitly/go-simplejson
   version: aabad6e819789e569bd6aabf444c935aa9ba1e44
+- name: github.com/go-redis/redis
+  version: a16aeec10ff407b1e7be6dd35797ccf5426ef0f0
 - name: github.com/jarcoal/httpmock
-  version: 145b10d659265440f062c31ea15326166bae56ee
+  version: 4442edb3db31196622da56482fd8d0fa375fba4d
 - name: github.com/moul/http2curl
   version: b1479103caacaa39319f75e7f57fc545287fca0d
 - name: github.com/parnurzeal/gorequest
-  version: 2aea80ce763523ecc6452e61c3727ae9595a5809
+  version: a578a48e8d6ca8b01a3b18314c43c6716bb5f5a3
+- name: github.com/pkg/errors
+  version: 248dadf4e9068a0b3e79f02ed0a610d935de5302
 - name: github.com/satori/go.uuid
   version: b061729afc07e77a8aa4fad0a2fd840958f1942a
 - name: github.com/stretchr/testify
@@ -21,6 +25,14 @@ imports:
   version: 0d8126fc6144eb5257485c59148128691e8ff849
   subpackages:
   - publicsuffix
+- name: gopkg.in/redis.v5
+  version: a16aeec10ff407b1e7be6dd35797ccf5426ef0f0
+  subpackages:
+  - internal
+  - internal/consistenthash
+  - internal/hashtag
+  - internal/pool
+  - internal/proto
 testImports:
 - name: github.com/davecgh/go-spew
   version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
