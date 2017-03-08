@@ -3,16 +3,18 @@ package models
 import (
 	"encoding/json"
 	"errors"
-	"time"
+	"net/url"
 
 	"github.com/hieven/go-instagram/config"
 	"github.com/hieven/go-instagram/constants"
+	"github.com/hieven/go-instagram/session"
 	"github.com/hieven/go-instagram/utils"
 	"github.com/parnurzeal/gorequest"
 )
 
 type Instagram struct {
 	Config       *config.Config
+	Session      session.Session
 	AgentPool    *utils.SuperAgentPool
 	Inbox        *Inbox
 	TimelineFeed *TimelineFeed
@@ -50,35 +52,42 @@ type likeResponse struct {
 
 func (ig *Instagram) Login() error {
 	for i := 0; i < ig.Config.Capacity; i++ {
-		igSigKeyVersion, signedBody := ig.CreateSignature()
-
-		payload := loginRequest{
-			IgSigKeyVersion: igSigKeyVersion,
-			SignedBody:      signedBody,
-		}
-
-		jsonData, _ := json.Marshal(payload)
-
-		url := constants.GetURL("Login", nil)
+		cookies := ig.Session.GetCookies()
 
 		agent := ig.AgentPool.Get()
 		defer ig.AgentPool.Put(agent)
 
-		_, body, _ := ig.SendRequest(agent.Post(url).
-			Type("multipart").
-			Send(string(jsonData)))
+		if len(cookies) > 0 {
+			u, _ := url.Parse(constants.HOST)
+			agent.Client.Jar.SetCookies(u, cookies)
+		} else {
+			igSigKeyVersion, signedBody := ig.CreateSignature()
 
-		var resp loginResponse
-		json.Unmarshal([]byte(body), &resp)
+			payload := loginRequest{
+				IgSigKeyVersion: igSigKeyVersion,
+				SignedBody:      signedBody,
+			}
 
-		if resp.Status == "fail" {
-			return errors.New(resp.Message)
+			jsonData, _ := json.Marshal(payload)
+
+			u := constants.GetURL("Login", nil)
+
+			_, body, _ := ig.SendRequest(agent.Post(u).
+				Type("multipart").
+				Send(string(jsonData)))
+
+			var resp loginResponse
+			json.Unmarshal([]byte(body), &resp)
+
+			if resp.Status == "fail" {
+				return errors.New(resp.Message)
+			}
+
+			// store user info
+			ig.Pk = resp.LoggedInUser.Pk
+
+			ig.Session.SetCookies(agent.Client)
 		}
-
-		// store user info
-		ig.Pk = resp.LoggedInUser.Pk
-
-		time.Sleep(ig.Config.LoginInterval)
 	}
 
 	return nil
