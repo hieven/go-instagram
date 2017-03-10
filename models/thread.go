@@ -81,6 +81,8 @@ func (thread *Thread) Show() (*Thread, error) {
 	}
 
 	thread.Items = resp.Thread.Items
+	thread.Users = resp.Thread.Users
+	thread.HasNewer = resp.Thread.HasNewer
 
 	return thread, nil
 }
