@@ -1,6 +1,7 @@
 package request
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/hieven/go-instagram/src/constants"
@@ -22,11 +23,7 @@ func New(sessionManager session.SessionManager) (RequestManger, error) {
 	return req, nil
 }
 
-func (request *requestManager) SetCookies(cookies []*http.Cookie) {
-	request.cookies = cookies
-}
-
-func (request *requestManager) Get(url string) (*http.Response, string, error) {
+func (request *requestManager) Get(ctx context.Context, url string) (*http.Response, string, error) {
 	req := gorequest.New().
 		Get(url)
 
@@ -42,7 +39,7 @@ func (request *requestManager) Get(url string) (*http.Response, string, error) {
 	return resp, body, err
 }
 
-func (request *requestManager) Post(url string, data interface{}) (*http.Response, string, error) {
+func (request *requestManager) Post(ctx context.Context, url string, data interface{}) (*http.Response, string, error) {
 	req := gorequest.New().
 		Post(url).
 		Type("multipart").

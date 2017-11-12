@@ -1,6 +1,7 @@
 package instagram
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 
@@ -21,8 +22,9 @@ type instagram struct {
 	sessionManager session.SessionManager
 
 	// API
-	inbox    *inbox
-	timeline *timeline
+	inbox    Inbox
+	timeline Timeline
+	thread   Thread
 }
 
 func New(cnf *config.Config) (Instagram, error) {
@@ -43,16 +45,16 @@ func New(cnf *config.Config) (Instagram, error) {
 	sessionManager, _ := session.NewSession(cnf)
 	requestManager, _ := request.New(sessionManager)
 
-	inbox := &inbox{
-		requestManager: requestManager,
-	}
 	timeline := &timeline{}
+	inbox := &inbox{requestManager: requestManager}
+	thread := &thread{requestManager: requestManager, authManager: authManager}
 
 	ig := &instagram{
 		config: cnf,
 
-		inbox:    inbox,
 		timeline: timeline,
+		inbox:    inbox,
+		thread:   thread,
 
 		// utils
 		authManager:    authManager,
@@ -63,7 +65,7 @@ func New(cnf *config.Config) (Instagram, error) {
 	return ig, nil
 }
 
-func (ig *instagram) Login() error {
+func (ig *instagram) Login(ctx context.Context) error {
 	sigPayload := &auth.SignaturePayload{
 		Csrftoken:         constants.SigCsrfToken,
 		DeviceID:          constants.SigDeviceID,
@@ -79,7 +81,7 @@ func (ig *instagram) Login() error {
 		SignedBody:      signedBody,
 	}
 
-	resp, body, _ := ig.requestManager.Post(constants.LoginEndpoint, req)
+	resp, body, _ := ig.requestManager.Post(ctx, constants.LoginEndpoint, req)
 
 	loginResp := &protos.LoginResponse{}
 	json.Unmarshal([]byte(body), loginResp) // TODO: handle error
@@ -93,10 +95,14 @@ func (ig *instagram) Login() error {
 	return nil
 }
 
+func (ig *instagram) Timeline() Timeline {
+	return ig.timeline
+}
+
 func (ig *instagram) Inbox() Inbox {
 	return ig.inbox
 }
 
-func (ig *instagram) Timeline() Timeline {
-	return ig.timeline
+func (ig *instagram) Thread() Thread {
+	return ig.thread
 }

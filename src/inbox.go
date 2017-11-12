@@ -1,6 +1,7 @@
 package instagram
 
 import (
+	"context"
 	"encoding/json"
 	"net/url"
 
@@ -13,13 +14,23 @@ type inbox struct {
 	requestManager request.RequestManger
 }
 
-func (inbox *inbox) Feed() (*protos.InboxFeedResponse, error) {
-	urlStru, _ := url.Parse(constants.InboxEndpoint) // TODO: handle error
+func (inbox *inbox) Feed(ctx context.Context, req *protos.InboxFeedRequest) (*protos.InboxFeedResponse, error) {
+	if req == nil {
+		return nil, ErrRequestRequired
+	}
 
-	_, body, _ := inbox.requestManager.Get(urlStru.String()) // TODO: handle error
+	urlStru, _ := url.Parse(constants.InboxEndpoint) // TODO: handle error
+	query := urlStru.Query()
+
+	if req.Cursor != "" {
+		query.Set("cursor", req.Cursor)
+	}
+
+	urlStru.RawQuery = query.Encode()
+
+	_, body, _ := inbox.requestManager.Get(ctx, urlStru.String()) // TODO: handle error
 
 	feedResponse := &protos.InboxFeedResponse{}
 	json.Unmarshal([]byte(body), feedResponse) // TODO: handle error
-
 	return feedResponse, nil
 }
