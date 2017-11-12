@@ -24,6 +24,13 @@ type threadUser struct {
 	FriendshipStatus friendshipStatus `json:"friendship_status"`
 }
 
+type mediaOrAdUser struct {
+	threadUser
+	ProfilePicID  string `json:"profile_pic_id"`
+	IsUnpublished bool   `json:"is_unpublished"`
+	IsFavorite    bool   `json:"is_favorite"`
+}
+
 type friendshipStatus struct {
 	Following       bool `json:"following"`
 	Blocking        bool `json:"blocking"`

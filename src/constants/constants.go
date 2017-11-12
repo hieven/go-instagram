@@ -22,6 +22,8 @@ var (
 	LoginEndpoint = fmt.Sprintf("%s/accounts/login/", APIEndpoint)
 	InboxEndpoint = fmt.Sprintf("%s/direct_v2/inbox/", APIEndpoint)
 
+	TimelineFeedEndpoint = fmt.Sprintf("%s/feed/timeline/?ranked_content=true", APIEndpoint)
+
 	ThreadApproveAllEndpoint    = fmt.Sprintf("%s/direct_v2/threads/approve_all/", APIEndpoint)
 	ThreadBroadcastTextEndpoint = fmt.Sprintf("%s/direct_v2/threads/broadcast/text/", APIEndpoint)
 	ThreadBroadcastLinkEndpoint = fmt.Sprintf("%s/direct_v2/threads/broadcast/link/", APIEndpoint)

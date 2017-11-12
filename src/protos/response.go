@@ -5,6 +5,13 @@ type defaultResponse struct {
 	Message string `json:"message"`
 }
 
+type TimelineFeedResponse struct {
+	defaultResponse
+	MoreAvailable bool            `json:"more_available"`
+	NextMaxID     string          `json:"next_max_id"`
+	Items         []*timelineItem `json:"feed_items"`
+}
+
 type LoginResponse struct {
 	defaultResponse
 	LoggedInUser *loggedInUser `json:"logged_in_user"`

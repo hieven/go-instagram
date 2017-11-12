@@ -47,7 +47,7 @@ func New(cnf *config.Config) (Instagram, error) {
 	requestManager, _ := request.New(sessionManager)
 	textManager, _ := text.New()
 
-	timeline := &timeline{}
+	timeline := &timeline{requestManager: requestManager, authManager: authManager}
 	inbox := &inbox{requestManager: requestManager}
 	thread := &thread{requestManager: requestManager, authManager: authManager, textManager: textManager}
 

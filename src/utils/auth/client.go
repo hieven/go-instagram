@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"strconv"
 
 	"github.com/hieven/go-instagram/src/constants"
 
@@ -38,6 +39,7 @@ func (auth *authManager) GenerateUUID() string {
 	return uuid.NewV4().String()
 }
 
-func (auth *authManager) GenerateRankToken(userID string) string {
-	return userID + "_" + auth.GenerateUUID()
+func (auth *authManager) GenerateRankToken(userID int64) string {
+	userIDStr := strconv.FormatInt(userID, 10)
+	return userIDStr + "_" + auth.GenerateUUID()
 }

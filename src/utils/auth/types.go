@@ -3,7 +3,7 @@ package auth
 type AuthManager interface {
 	GenerateSignature(payload *SignaturePayload) (sigVersion string, signedBody string, err error)
 	GenerateUUID() (uuid string)
-	GenerateRankToken(userID string) string
+	GenerateRankToken(userID int64) string
 }
 
 type SignaturePayload struct {

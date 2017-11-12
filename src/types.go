@@ -15,7 +15,7 @@ type Instagram interface {
 }
 
 type Timeline interface {
-	Feed() (string, error)
+	Feed(context.Context, *protos.TimelineFeedRequest) (*protos.TimelineFeedResponse, error)
 }
 
 type Inbox interface {
