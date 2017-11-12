@@ -24,4 +24,5 @@ type Inbox interface {
 
 type Thread interface {
 	BroadcastText(context.Context, *protos.ThreadBroadcastTextRequest) (*protos.ThreadBroadcastTextResponse, error)
+	BroadcastLink(context.Context, *protos.ThreadBroadcastLinkRequest) (*protos.ThreadBroadcastLinkResponse, error)
 }

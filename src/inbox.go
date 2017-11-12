@@ -30,7 +30,7 @@ func (inbox *inbox) Feed(ctx context.Context, req *protos.InboxFeedRequest) (*pr
 
 	_, body, _ := inbox.requestManager.Get(ctx, urlStru.String()) // TODO: handle error
 
-	feedResponse := &protos.InboxFeedResponse{}
-	json.Unmarshal([]byte(body), feedResponse) // TODO: handle error
-	return feedResponse, nil
+	result := &protos.InboxFeedResponse{}
+	json.Unmarshal([]byte(body), result) // TODO: handle error
+	return result, nil
 }

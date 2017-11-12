@@ -19,7 +19,9 @@ var (
 	Host        = fmt.Sprintf("%s://%s", Scheme, Hostname)
 	APIEndpoint = fmt.Sprintf("%s/api/v1", Host)
 
-	LoginEndpoint               = fmt.Sprintf("%s/accounts/login/", APIEndpoint)
-	InboxEndpoint               = fmt.Sprintf("%s/direct_v2/inbox/", APIEndpoint)
+	LoginEndpoint = fmt.Sprintf("%s/accounts/login/", APIEndpoint)
+	InboxEndpoint = fmt.Sprintf("%s/direct_v2/inbox/", APIEndpoint)
+
 	ThreadBroadcastTextEndpoint = fmt.Sprintf("%s/direct_v2/threads/broadcast/text/", APIEndpoint)
+	ThreadBroadcastLinkEndpoint = fmt.Sprintf("%s/direct_v2/threads/broadcast/link/", APIEndpoint)
 )

@@ -11,6 +11,7 @@ import (
 	"github.com/hieven/go-instagram/src/utils/auth"
 	"github.com/hieven/go-instagram/src/utils/request"
 	"github.com/hieven/go-instagram/src/utils/session"
+	"github.com/hieven/go-instagram/src/utils/text"
 )
 
 type instagram struct {
@@ -44,10 +45,11 @@ func New(cnf *config.Config) (Instagram, error) {
 	authManager, _ := auth.New()
 	sessionManager, _ := session.NewSession(cnf)
 	requestManager, _ := request.New(sessionManager)
+	textManager, _ := text.New()
 
 	timeline := &timeline{}
 	inbox := &inbox{requestManager: requestManager}
-	thread := &thread{requestManager: requestManager, authManager: authManager}
+	thread := &thread{requestManager: requestManager, authManager: authManager, textManager: textManager}
 
 	ig := &instagram{
 		config: cnf,

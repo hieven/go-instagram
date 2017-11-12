@@ -22,3 +22,8 @@ type ThreadBroadcastTextResponse struct {
 	defaultResponse
 	Threads []*thread `json:"threads"`
 }
+
+type ThreadBroadcastLinkResponse struct {
+	defaultResponse
+	Threads []*thread `json:"threads"`
+}

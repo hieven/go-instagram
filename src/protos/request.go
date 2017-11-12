@@ -6,12 +6,20 @@ type LoginRequest struct {
 }
 
 type InboxFeedRequest struct {
-	Cursor string
+	Cursor string // NOTE: optional
 }
 
 type ThreadBroadcastTextRequest struct {
-	UUID          string `json:"_uuid"`
+	UUID          string `json:"_uuid"`          // NOTE: optional
+	ClientContext string `json:"client_context"` // NOTE: optional
 	ThreadIDs     string `json:"thread_ids"`
-	ClientContext string `json:"client_context"`
 	Text          string `json:"text"`
+}
+
+type ThreadBroadcastLinkRequest struct {
+	UUID          string `json:"_uuid"`          // NOTE: optional
+	ClientContext string `json:"client_context"` // NOTE: optional
+	ThreadIDs     string `json:"thread_ids"`
+	LinkText      string `json:"link_text"`
+	LinkURLs      string `json:"link_urls"` // NOTE: forbidden
 }
