@@ -23,3 +23,7 @@ type ThreadBroadcastLinkRequest struct {
 	LinkText      string `json:"link_text"`
 	LinkURLs      string `json:"link_urls"` // NOTE: forbidden
 }
+
+type ThreadApproveAllRequest struct {
+	UUID string `json:"_uuid"` // NOTE: optional
+}

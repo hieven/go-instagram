@@ -18,6 +18,25 @@ type thread struct {
 	textManager    text.TextManager
 }
 
+func (thread *thread) ApproveAll(ctx context.Context, req *protos.ThreadApproveAllRequest) (*protos.ThreadApproveAllResponse, error) {
+	if req == nil {
+		return nil, ErrRequestRequired
+	}
+
+	if req.UUID == "" {
+		req.UUID = thread.authManager.GenerateUUID()
+	}
+
+	urlStru, _ := url.Parse(constants.ThreadApproveAllEndpoint) // TODO: handle error
+
+	_, body, _ := thread.requestManager.Post(ctx, urlStru.String(), req) // TODO: handle error
+
+	result := &protos.ThreadApproveAllResponse{}
+	json.Unmarshal([]byte(body), result) // TODO: handle error
+
+	return result, nil
+}
+
 func (thread *thread) BroadcastText(ctx context.Context, req *protos.ThreadBroadcastTextRequest) (*protos.ThreadBroadcastTextResponse, error) {
 	if req == nil {
 		return nil, ErrRequestRequired
