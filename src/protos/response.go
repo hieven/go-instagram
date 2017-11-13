@@ -38,3 +38,7 @@ type ThreadBroadcastLinkResponse struct {
 type ThreadApproveAllResponse struct {
 	defaultResponse
 }
+
+type MediaLikeResponse struct {
+	defaultResponse
+}

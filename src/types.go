@@ -12,6 +12,7 @@ type Instagram interface {
 	Timeline() Timeline
 	Inbox() Inbox
 	Thread() Thread
+	Media() Media
 }
 
 type Timeline interface {
@@ -26,4 +27,8 @@ type Thread interface {
 	ApproveAll(context.Context, *protos.ThreadApproveAllRequest) (*protos.ThreadApproveAllResponse, error)
 	BroadcastText(context.Context, *protos.ThreadBroadcastTextRequest) (*protos.ThreadBroadcastTextResponse, error)
 	BroadcastLink(context.Context, *protos.ThreadBroadcastLinkRequest) (*protos.ThreadBroadcastLinkResponse, error)
+}
+
+type Media interface {
+	Like(context.Context, *protos.MediaLikeRequest) (*protos.MediaLikeResponse, error)
 }

@@ -8,7 +8,7 @@ type LoginRequest struct {
 type TimelineFeedRequest struct {
 	UserID    int64  // NOTE: required
 	MaxID     string // NOTE: optional
-	RankToken string // NOTE: optional
+	RankToken string // NOTE: forbidden
 }
 
 type InboxFeedRequest struct {
@@ -32,4 +32,10 @@ type ThreadBroadcastLinkRequest struct {
 
 type ThreadApproveAllRequest struct {
 	UUID string `json:"_uuid"` // NOTE: optional
+}
+
+type MediaLikeRequest struct {
+	LoginRequest
+	MediaID string `json:"-"`   // NOTE: required
+	Src     string `json:"src"` // NOTE: forbidden
 }

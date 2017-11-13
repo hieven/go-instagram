@@ -27,4 +27,6 @@ var (
 	ThreadApproveAllEndpoint    = fmt.Sprintf("%s/direct_v2/threads/approve_all/", APIEndpoint)
 	ThreadBroadcastTextEndpoint = fmt.Sprintf("%s/direct_v2/threads/broadcast/text/", APIEndpoint)
 	ThreadBroadcastLinkEndpoint = fmt.Sprintf("%s/direct_v2/threads/broadcast/link/", APIEndpoint)
+
+	MediaLikeEndpoint = APIEndpoint + "/media/%s/like/"
 )
