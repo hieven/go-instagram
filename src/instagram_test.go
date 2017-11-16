@@ -8,11 +8,22 @@ import (
 )
 
 var _ = Describe("instagram", func() {
+	var (
+		cnf *config.Config
+		ig  Instagram
+	)
+
+	BeforeEach(func() {
+		cnf = &config.Config{
+			Username: "Johnny",
+			Password: "123456",
+		}
+
+		ig, _ = New(cnf)
+	})
+
 	Describe(".New", func() {
 		var (
-			cnf *config.Config
-
-			ig  Instagram
 			err error
 		)
 
@@ -71,8 +82,68 @@ var _ = Describe("instagram", func() {
 	})
 
 	Describe("#Login", func() {})
-	Describe("#Timeline", func() {})
-	Describe("#Inbox", func() {})
-	Describe("#Thread", func() {})
-	Describe("#Media", func() {})
+
+	Describe("#Timeline", func() {
+		var (
+			client Timeline
+		)
+
+		JustBeforeEach(func() {
+			client = ig.Timeline()
+		})
+
+		Context("when success", func() {
+			It("should return client", func() {
+				Expect(client).NotTo(BeNil())
+			})
+		})
+	})
+
+	Describe("#Inbox", func() {
+		var (
+			client Inbox
+		)
+
+		JustBeforeEach(func() {
+			client = ig.Inbox()
+		})
+
+		Context("when success", func() {
+			It("should return client", func() {
+				Expect(client).NotTo(BeNil())
+			})
+		})
+	})
+
+	Describe("#Thread", func() {
+		var (
+			client Thread
+		)
+
+		JustBeforeEach(func() {
+			client = ig.Thread()
+		})
+
+		Context("when success", func() {
+			It("should return client", func() {
+				Expect(client).NotTo(BeNil())
+			})
+		})
+	})
+
+	Describe("#Media", func() {
+		var (
+			client Media
+		)
+
+		JustBeforeEach(func() {
+			client = ig.Media()
+		})
+
+		Context("when success", func() {
+			It("should return client", func() {
+				Expect(client).NotTo(BeNil())
+			})
+		})
+	})
 })
