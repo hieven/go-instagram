@@ -32,4 +32,5 @@ type Thread interface {
 
 type Media interface {
 	Like(context.Context, *protos.MediaLikeRequest) (*protos.MediaLikeResponse, error)
+	Unlike(context.Context, *protos.MediaUnlikeRequest) (*protos.MediaUnlikeResponse, error)
 }

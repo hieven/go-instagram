@@ -43,3 +43,9 @@ type MediaLikeRequest struct {
 	MediaID string `json:"-"`   // NOTE: required
 	Src     string `json:"src"` // NOTE: forbidden
 }
+
+type MediaUnlikeRequest struct {
+	LoginRequest
+	MediaID string `json:"-"`   // NOTE: required
+	Src     string `json:"src"` // NOTE: forbidden
+}

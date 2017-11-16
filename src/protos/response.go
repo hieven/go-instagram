@@ -47,3 +47,7 @@ type ThreadApproveAllResponse struct {
 type MediaLikeResponse struct {
 	defaultResponse
 }
+
+type MediaUnlikeResponse struct {
+	defaultResponse
+}

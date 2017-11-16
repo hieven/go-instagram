@@ -29,5 +29,6 @@ var (
 	ThreadBroadcastLinkEndpoint = APIEndpoint + "/direct_v2/threads/broadcast/link/"
 	ThreadShowEndpoint          = APIEndpoint + "/direct_v2/threads/%s/"
 
-	MediaLikeEndpoint = APIEndpoint + "/media/%s/like/"
+	MediaLikeEndpoint   = APIEndpoint + "/media/%s/like/"
+	MediaUnlikeEndpoint = APIEndpoint + "/media/%s/unlike/"
 )

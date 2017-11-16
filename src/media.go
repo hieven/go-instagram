@@ -48,3 +48,31 @@ func (media *media) Like(ctx context.Context, req *protos.MediaLikeRequest) (*pr
 	json.Unmarshal([]byte(body), result) // TODO: handle error
 	return result, nil
 }
+
+func (media *media) Unlike(ctx context.Context, req *protos.MediaUnlikeRequest) (*protos.MediaUnlikeResponse, error) {
+	if req == nil {
+		return nil, ErrRequestRequired
+	}
+
+	urlStru, _ := url.Parse(fmt.Sprintf(constants.MediaUnlikeEndpoint, req.MediaID)) // TODO: handle error
+
+	sigPayload := &auth.SignaturePayload{
+		Csrftoken:         constants.SigCsrfToken,
+		DeviceID:          constants.SigDeviceID,
+		UUID:              media.authManager.GenerateUUID(),
+		UserName:          media.config.Username,
+		Password:          media.config.Password,
+		LoginAttemptCount: 0,
+	}
+	igSigKeyVersion, signedBody, _ := media.authManager.GenerateSignature(sigPayload) // TODO: handle error
+
+	req.Src = "profile"
+	req.IgSigKeyVersion = igSigKeyVersion
+	req.SignedBody = signedBody
+
+	_, body, _ := media.requestManager.Post(ctx, urlStru.String(), req) // TODO: handle error
+
+	result := &protos.MediaUnlikeResponse{}
+	json.Unmarshal([]byte(body), result) // TODO: handle error
+	return result, nil
+}
