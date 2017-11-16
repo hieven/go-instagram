@@ -19,14 +19,14 @@ var (
 	Host        = fmt.Sprintf("%s://%s", Scheme, Hostname)
 	APIEndpoint = fmt.Sprintf("%s/api/v1", Host)
 
-	LoginEndpoint = fmt.Sprintf("%s/accounts/login/", APIEndpoint)
-	InboxEndpoint = fmt.Sprintf("%s/direct_v2/inbox/", APIEndpoint)
+	LoginEndpoint = APIEndpoint + "/accounts/login/"
+	InboxEndpoint = APIEndpoint + "/direct_v2/inbox/"
 
-	TimelineFeedEndpoint = fmt.Sprintf("%s/feed/timeline/?ranked_content=true", APIEndpoint)
+	TimelineFeedEndpoint = APIEndpoint + "/feed/timeline/?ranked_content=true"
 
-	ThreadApproveAllEndpoint    = fmt.Sprintf("%s/direct_v2/threads/approve_all/", APIEndpoint)
-	ThreadBroadcastTextEndpoint = fmt.Sprintf("%s/direct_v2/threads/broadcast/text/", APIEndpoint)
-	ThreadBroadcastLinkEndpoint = fmt.Sprintf("%s/direct_v2/threads/broadcast/link/", APIEndpoint)
+	ThreadApproveAllEndpoint    = APIEndpoint + "/direct_v2/threads/approve_all/"
+	ThreadBroadcastTextEndpoint = APIEndpoint + "/direct_v2/threads/broadcast/text/"
+	ThreadBroadcastLinkEndpoint = APIEndpoint + "/direct_v2/threads/broadcast/link/"
 
 	MediaLikeEndpoint = APIEndpoint + "/media/%s/like/"
 )
