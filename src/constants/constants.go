@@ -27,6 +27,7 @@ var (
 	ThreadApproveAllEndpoint    = APIEndpoint + "/direct_v2/threads/approve_all/"
 	ThreadBroadcastTextEndpoint = APIEndpoint + "/direct_v2/threads/broadcast/text/"
 	ThreadBroadcastLinkEndpoint = APIEndpoint + "/direct_v2/threads/broadcast/link/"
+	ThreadShowEndpoint          = APIEndpoint + "/direct_v2/threads/%s/"
 
 	MediaLikeEndpoint = APIEndpoint + "/media/%s/like/"
 )

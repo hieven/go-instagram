@@ -3,6 +3,7 @@ package instagram
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/url"
 
 	"github.com/hieven/go-instagram/src/constants"
@@ -79,6 +80,20 @@ func (thread *thread) BroadcastLink(ctx context.Context, req *protos.ThreadBroad
 	_, body, _ := thread.requestManager.Post(ctx, urlStru.String(), req) // TODO: handle error
 
 	result := &protos.ThreadBroadcastLinkResponse{}
+	json.Unmarshal([]byte(body), result) // TODO: handle error
+	return result, nil
+}
+
+func (thread *thread) Show(ctx context.Context, req *protos.ThreadShowRequest) (*protos.ThreadShowResponse, error) {
+	if req == nil {
+		return nil, ErrRequestRequired
+	}
+
+	urlStru, _ := url.Parse(fmt.Sprintf(constants.ThreadShowEndpoint, req.ThreadID)) // TODO: handle error
+
+	_, body, _ := thread.requestManager.Get(ctx, urlStru.String()) // TODO: handle error
+
+	result := &protos.ThreadShowResponse{}
 	json.Unmarshal([]byte(body), result) // TODO: handle error
 	return result, nil
 }

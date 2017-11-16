@@ -27,6 +27,7 @@ type Thread interface {
 	ApproveAll(context.Context, *protos.ThreadApproveAllRequest) (*protos.ThreadApproveAllResponse, error)
 	BroadcastText(context.Context, *protos.ThreadBroadcastTextRequest) (*protos.ThreadBroadcastTextResponse, error)
 	BroadcastLink(context.Context, *protos.ThreadBroadcastLinkRequest) (*protos.ThreadBroadcastLinkResponse, error)
+	Show(context.Context, *protos.ThreadShowRequest) (*protos.ThreadShowResponse, error)
 }
 
 type Media interface {
