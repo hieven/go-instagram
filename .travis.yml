@@ -4,15 +4,17 @@ sudo: required
 dist: trusty
 
 go:
-  - "1.7"
+  - "1.9"
 
 install:
-  - mkdir -p $GOPATH/bin
+  - go get github.com/onsi/ginkgo/ginkgo
+  - go get github.com/onsi/gomega
+  - go get -u github.com/golang/lint/golint
   - curl https://glide.sh/get | sh
   - glide install
 
 script:
-  - ./go.test.sh
+  - make
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
