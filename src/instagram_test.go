@@ -1,29 +1,72 @@
-package instagram_test
+package instagram
 
 import (
-	. "github.com/hieven/go-instagram/src"
+	"context"
+	"encoding/json"
+	"net/http"
+
+	"github.com/hieven/go-instagram/src/constants"
+	"github.com/hieven/go-instagram/src/utils/auth"
+
+	"github.com/satori/go.uuid"
+
+	"github.com/stretchr/testify/mock"
+
 	"github.com/hieven/go-instagram/src/config"
+	instagramMocks "github.com/hieven/go-instagram/src/mocks"
+	"github.com/hieven/go-instagram/src/protos"
+	authMocks "github.com/hieven/go-instagram/src/utils/auth/mocks"
+	requestMocks "github.com/hieven/go-instagram/src/utils/request/mocks"
+	sessionMocks "github.com/hieven/go-instagram/src/utils/session/mocks"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("instagram", func() {
 	var (
+		mockAuthManager    *authMocks.AuthManager
+		mockSessionManager *sessionMocks.SessionManager
+		mockRequestManager *requestMocks.RequestManger
+
+		mockTimeline *instagramMocks.Timeline
+		mockInbox    *instagramMocks.Inbox
+		mockThread   *instagramMocks.Thread
+		mockMedia    *instagramMocks.Media
+
 		cnf *config.Config
-		ig  Instagram
+		ig  *instagram
 	)
 
 	BeforeEach(func() {
-		cnf = &config.Config{
-			Username: "Johnny",
-			Password: "123456",
-		}
+		mockAuthManager = &authMocks.AuthManager{}
+		mockSessionManager = &sessionMocks.SessionManager{}
+		mockRequestManager = &requestMocks.RequestManger{}
 
-		ig, _ = New(cnf)
+		mockTimeline = &instagramMocks.Timeline{}
+		mockInbox = &instagramMocks.Inbox{}
+		mockThread = &instagramMocks.Thread{}
+		mockMedia = &instagramMocks.Media{}
+
+		ig = &instagram{
+			config: &config.Config{
+				Username: "Johnny",
+				Password: "123456",
+			},
+
+			authManager:    mockAuthManager,
+			sessionManager: mockSessionManager,
+			requestManager: mockRequestManager,
+
+			timeline: mockTimeline,
+			inbox:    mockInbox,
+			thread:   mockThread,
+			media:    mockMedia,
+		}
 	})
 
 	Describe(".New", func() {
 		var (
+			ig  Instagram
 			err error
 		)
 
@@ -81,7 +124,112 @@ var _ = Describe("instagram", func() {
 		}
 	})
 
-	Describe("#Login", func() {})
+	Describe("#Login", func() {
+		var (
+			ctx context.Context
+
+			mockGenerateUUIDResp            string
+			mockGenerateSignatureKeyVersion string
+			mockGenerateSignatureBody       string
+			mockLoginResp                   protos.LoginResponse
+			mockResp                        *http.Response
+			mockBody                        string
+
+			err error
+
+			expectedGenerateSignatureParam *auth.SignaturePayload
+			expectedPostReq                protos.LoginRequest
+			expectedSetCookiesParam        []*http.Cookie
+		)
+
+		BeforeEach(func() {
+			ctx = context.Background()
+
+			mockGenerateUUIDResp = uuid.NewV4().String()
+			mockGenerateSignatureKeyVersion = "key version"
+			mockGenerateSignatureBody = "sig body"
+
+			cookie := &http.Cookie{}
+			mockResp = &http.Response{
+				Header: http.Header{
+					"Set-Cookie": []string{cookie.String()},
+				},
+			}
+
+			mockLoginResp = protos.LoginResponse{}
+			bytes, _ := json.Marshal(mockLoginResp)
+			mockBody = string(bytes)
+
+			expectedGenerateSignatureParam = &auth.SignaturePayload{
+				Csrftoken:         constants.SigCsrfToken,
+				DeviceID:          constants.SigDeviceID,
+				UUID:              mockGenerateUUIDResp,
+				UserName:          ig.config.Username,
+				Password:          ig.config.Password,
+				LoginAttemptCount: 0,
+			}
+
+			expectedPostReq = protos.LoginRequest{
+				IgSigKeyVersion: mockGenerateSignatureKeyVersion,
+				SignedBody:      mockGenerateSignatureBody,
+			}
+
+			expectedSetCookiesParam = mockResp.Cookies()
+		})
+
+		JustBeforeEach(func() {
+			mockAuthManager.On("GenerateUUID").Return(mockGenerateUUIDResp)
+			mockAuthManager.On("GenerateSignature", mock.Anything).Return(mockGenerateSignatureKeyVersion, mockGenerateSignatureBody, nil)
+			mockRequestManager.On("Post", mock.Anything, mock.Anything, mock.Anything).Return(mockResp, mockBody, nil)
+			mockSessionManager.On("SetCookies", mockResp.Cookies()).Return(nil)
+
+			err = ig.Login(ctx)
+		})
+
+		Context("when success", func() {
+			It("should return no error", func() {
+				Expect(err).To(BeNil())
+			})
+
+			It("should call GenerateUUID", func() {
+				mockAuthManager.AssertNumberOfCalls(GinkgoT(), "GenerateUUID", 1)
+				mockAuthManager.AssertCalled(GinkgoT(), "GenerateUUID")
+			})
+
+			It("should call GenerateSignature", func() {
+				mockAuthManager.AssertNumberOfCalls(GinkgoT(), "GenerateSignature", 1)
+				mockAuthManager.AssertCalled(GinkgoT(), "GenerateSignature", expectedGenerateSignatureParam)
+			})
+
+			It("should call Post", func() {
+				mockRequestManager.AssertNumberOfCalls(GinkgoT(), "Post", 1)
+				mockRequestManager.AssertCalled(GinkgoT(), "Post", mock.Anything, constants.LoginEndpoint, expectedPostReq)
+			})
+
+			It("should call SetCookies", func() {
+				mockSessionManager.AssertNumberOfCalls(GinkgoT(), "SetCookies", 1)
+				mockSessionManager.AssertCalled(GinkgoT(), "SetCookies", expectedSetCookiesParam)
+			})
+		})
+
+		Context("when return status is fail", func() {
+			BeforeEach(func() {
+				mockLoginResp.Status = constants.InstagramStatusFail
+				mockLoginResp.Message = "oops"
+				bytes, _ := json.Marshal(mockLoginResp)
+				mockBody = string(bytes)
+			})
+
+			It("should return error", func() {
+				Expect(err).NotTo(BeNil())
+				Expect(err.Error()).To(Equal(mockLoginResp.Message))
+			})
+
+			It("should not call SetCookies", func() {
+				mockSessionManager.AssertNumberOfCalls(GinkgoT(), "SetCookies", 0)
+			})
+		})
+	})
 
 	Describe("#Timeline", func() {
 		var (
