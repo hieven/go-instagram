@@ -13,7 +13,6 @@ import (
 	"github.com/stretchr/testify/mock"
 
 	"github.com/hieven/go-instagram/src/config"
-	instagramMocks "github.com/hieven/go-instagram/src/mocks"
 	"github.com/hieven/go-instagram/src/protos"
 	authMocks "github.com/hieven/go-instagram/src/utils/auth/mocks"
 	requestMocks "github.com/hieven/go-instagram/src/utils/request/mocks"
@@ -28,10 +27,10 @@ var _ = Describe("instagram", func() {
 		mockSessionManager *sessionMocks.SessionManager
 		mockRequestManager *requestMocks.RequestManger
 
-		mockTimeline *instagramMocks.Timeline
-		mockInbox    *instagramMocks.Inbox
-		mockThread   *instagramMocks.Thread
-		mockMedia    *instagramMocks.Media
+		mockTimeline *timeline
+		mockInbox    *inbox
+		mockThread   *thread
+		mockMedia    *media
 
 		cnf *config.Config
 		ig  *instagram
@@ -42,10 +41,10 @@ var _ = Describe("instagram", func() {
 		mockSessionManager = &sessionMocks.SessionManager{}
 		mockRequestManager = &requestMocks.RequestManger{}
 
-		mockTimeline = &instagramMocks.Timeline{}
-		mockInbox = &instagramMocks.Inbox{}
-		mockThread = &instagramMocks.Thread{}
-		mockMedia = &instagramMocks.Media{}
+		mockTimeline = &timeline{}
+		mockInbox = &inbox{}
+		mockThread = &thread{}
+		mockMedia = &media{}
 
 		ig = &instagram{
 			config: &config.Config{
@@ -138,7 +137,7 @@ var _ = Describe("instagram", func() {
 			err error
 
 			expectedGenerateSignatureParam *auth.SignaturePayload
-			expectedPostReq                protos.LoginRequest
+			expectedPostReq                *protos.LoginRequest
 			expectedSetCookiesParam        []*http.Cookie
 		)
 
@@ -157,8 +156,8 @@ var _ = Describe("instagram", func() {
 			}
 
 			mockLoginResp = protos.LoginResponse{}
-			bytes, _ := json.Marshal(mockLoginResp)
-			mockBody = string(bytes)
+			mockLoginRespbytes, _ := json.Marshal(mockLoginResp)
+			mockBody = string(mockLoginRespbytes)
 
 			expectedGenerateSignatureParam = &auth.SignaturePayload{
 				Csrftoken:         constants.SigCsrfToken,
@@ -169,7 +168,7 @@ var _ = Describe("instagram", func() {
 				LoginAttemptCount: 0,
 			}
 
-			expectedPostReq = protos.LoginRequest{
+			expectedPostReq = &protos.LoginRequest{
 				IgSigKeyVersion: mockGenerateSignatureKeyVersion,
 				SignedBody:      mockGenerateSignatureBody,
 			}

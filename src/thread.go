@@ -19,18 +19,18 @@ type thread struct {
 	textManager    text.TextManager
 }
 
-func (thread *thread) ApproveAll(ctx context.Context, req *protos.ThreadApproveAllRequest) (*protos.ThreadApproveAllResponse, error) {
+func (thread *thread) ApproveAll(ctx context.Context, req *ThreadApproveAllRequest) (*protos.ThreadApproveAllResponse, error) {
 	if req == nil {
 		return nil, ErrRequestRequired
 	}
 
-	if req.UUID == "" {
-		req.UUID = thread.authManager.GenerateUUID()
-	}
-
 	urlStru, _ := url.Parse(constants.ThreadApproveAllEndpoint) // TODO: handle error
 
-	_, body, _ := thread.requestManager.Post(ctx, urlStru.String(), req) // TODO: handle error
+	internalReq := &protos.ThreadApproveAllRequest{
+		UUID: thread.authManager.GenerateUUID(),
+	}
+
+	_, body, _ := thread.requestManager.Post(ctx, urlStru.String(), internalReq) // TODO: handle error
 
 	result := &protos.ThreadApproveAllResponse{}
 	json.Unmarshal([]byte(body), result) // TODO: handle error
@@ -38,22 +38,21 @@ func (thread *thread) ApproveAll(ctx context.Context, req *protos.ThreadApproveA
 	return result, nil
 }
 
-func (thread *thread) BroadcastText(ctx context.Context, req *protos.ThreadBroadcastTextRequest) (*protos.ThreadBroadcastTextResponse, error) {
+func (thread *thread) BroadcastText(ctx context.Context, req *ThreadBroadcastTextRequest) (*protos.ThreadBroadcastTextResponse, error) {
 	if req == nil {
 		return nil, ErrRequestRequired
 	}
 
-	if req.ClientContext == "" {
-		req.ClientContext = thread.authManager.GenerateUUID()
-	}
-	if req.UUID == "" {
-		req.UUID = thread.authManager.GenerateUUID()
-	}
-	req.ThreadIDs = "[" + req.ThreadIDs + "]"
-
 	urlStru, _ := url.Parse(constants.ThreadBroadcastTextEndpoint) // TODO: handle error
 
-	_, body, _ := thread.requestManager.Post(ctx, urlStru.String(), req) // TODO: handle error
+	internalReq := &protos.ThreadBroadcastTextRequest{
+		ThreadIDs:     "[" + req.ThreadIDs + "]",
+		Text:          req.Text,
+		UUID:          thread.authManager.GenerateUUID(),
+		ClientContext: thread.authManager.GenerateUUID(),
+	}
+
+	_, body, _ := thread.requestManager.Post(ctx, urlStru.String(), internalReq) // TODO: handle error
 
 	result := &protos.ThreadBroadcastTextResponse{}
 	json.Unmarshal([]byte(body), result) // TODO: handle error
@@ -61,30 +60,29 @@ func (thread *thread) BroadcastText(ctx context.Context, req *protos.ThreadBroad
 	return result, nil
 }
 
-func (thread *thread) BroadcastLink(ctx context.Context, req *protos.ThreadBroadcastLinkRequest) (*protos.ThreadBroadcastLinkResponse, error) {
+func (thread *thread) BroadcastLink(ctx context.Context, req *ThreadBroadcastLinkRequest) (*protos.ThreadBroadcastLinkResponse, error) {
 	if req == nil {
 		return nil, ErrRequestRequired
 	}
 
-	if req.ClientContext == "" {
-		req.ClientContext = thread.authManager.GenerateUUID()
-	}
-	if req.UUID == "" {
-		req.UUID = thread.authManager.GenerateUUID()
-	}
-	req.ThreadIDs = "[" + req.ThreadIDs + "]"
-	req.LinkURLs = `["` + thread.textManager.ExtractURL(req.LinkText) + `"]`
-
 	urlStru, _ := url.Parse(constants.ThreadBroadcastLinkEndpoint) // TODO: handle error
 
-	_, body, _ := thread.requestManager.Post(ctx, urlStru.String(), req) // TODO: handle error
+	internalReq := &protos.ThreadBroadcastLinkRequest{
+		ThreadIDs:     "[" + req.ThreadIDs + "]",
+		LinkText:      req.LinkText,
+		LinkURLs:      `["` + thread.textManager.ExtractURL(req.LinkText) + `"]`,
+		ClientContext: thread.authManager.GenerateUUID(),
+		UUID:          thread.authManager.GenerateUUID(),
+	}
+
+	_, body, _ := thread.requestManager.Post(ctx, urlStru.String(), internalReq) // TODO: handle error
 
 	result := &protos.ThreadBroadcastLinkResponse{}
 	json.Unmarshal([]byte(body), result) // TODO: handle error
 	return result, nil
 }
 
-func (thread *thread) Show(ctx context.Context, req *protos.ThreadShowRequest) (*protos.ThreadShowResponse, error) {
+func (thread *thread) Show(ctx context.Context, req *ThreadShowRequest) (*protos.ThreadShowResponse, error) {
 	if req == nil {
 		return nil, ErrRequestRequired
 	}

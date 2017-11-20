@@ -1,6 +1,6 @@
 package protos
 
-type location struct {
+type Location struct {
 	ExternalSource   string  `json:"external_source"`
 	City             string  `json:"city"`
 	Name             string  `json:"name"`

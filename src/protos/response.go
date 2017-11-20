@@ -9,17 +9,17 @@ type TimelineFeedResponse struct {
 	defaultResponse
 	MoreAvailable bool            `json:"more_available"`
 	NextMaxID     string          `json:"next_max_id"`
-	Items         []*timelineItem `json:"feed_items"`
+	Items         []*TimelineItem `json:"feed_items"`
 }
 
 type LoginResponse struct {
 	defaultResponse
-	LoggedInUser *loggedInUser `json:"logged_in_user"`
+	LoggedInUser *LoggedInUser `json:"logged_in_user"`
 }
 
 type InboxFeedResponse struct {
 	defaultResponse
-	Inbox                *inbox `json:"inbox"`
+	Inbox                *Inbox `json:"inbox"`
 	PendingRequestsTotal int    `json:"pending_requests_total"`
 	SeqID                int    `json:"seq_id"`
 	// PendingRequestsUsers []string `json:"pending_requests_users"`
@@ -27,17 +27,17 @@ type InboxFeedResponse struct {
 
 type ThreadBroadcastTextResponse struct {
 	defaultResponse
-	Threads []*thread `json:"threads"`
+	Threads []*ThreadItem `json:"threads"`
 }
 
 type ThreadBroadcastLinkResponse struct {
 	defaultResponse
-	Threads []*thread `json:"threads"`
+	Threads []*ThreadItem `json:"threads"`
 }
 
 type ThreadShowResponse struct {
 	defaultResponse
-	Thread *thread `json:"thread"`
+	Thread *ThreadItem `json:"thread"`
 }
 
 type ThreadApproveAllResponse struct {

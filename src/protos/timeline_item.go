@@ -1,20 +1,20 @@
 package protos
 
-type timelineItem struct {
-	MediaOrAd      mediaOrAd      `json:"media_or_ad"`
-	SuggestedUsers suggestedUsers `json:"suggested_users"`
+type TimelineItem struct {
+	MediaOrAd      MediaOrAd      `json:"media_or_ad"`
+	SuggestedUsers SuggestedUsers `json:"suggested_users"`
 }
 
-type mediaOrAd struct {
+type MediaOrAd struct {
 	Pk              int64           `json:"pk"`
 	ID              string          `json:"id"`
 	MediaType       int             `json:"media_type"`
-	ImageVersions2  *imageVersions2 `json:"image_versions2"`
-	Caption         *caption        `json:"caption"`
+	ImageVersions2  *ImageVersions2 `json:"image_versions2"`
+	Caption         *Caption        `json:"caption"`
 	CaptionIsEdited bool            `json:"caption_is_edited"`
-	VideoVersions   []*videoVersion `json:"video_versions"`
+	VideoVersions   []*VideoVersion `json:"video_versions"`
 	VideoDuriation  float64         `json:"video_duration"`
-	User            mediaOrAdUser   `json:"user"`
+	User            MediaOrAdUser   `json:"user"`
 	HasMoreComments bool            `json:"has_more_comments"`
 	HasLiked        bool            `json:"has_liked"`
 	HasAudio        bool            `json:"has_audio"`
@@ -24,7 +24,7 @@ type mediaOrAd struct {
 	LikeCount       int             `json:"like_count"`
 }
 
-type suggestedUsers struct {
+type SuggestedUsers struct {
 	Title            string `json:"title"`
 	ViewAllText      string `json:"view_all_text"`
 	LandingSiteTitle string `json:"landing_site_title"`

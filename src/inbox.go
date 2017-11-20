@@ -14,7 +14,7 @@ type inbox struct {
 	requestManager request.RequestManger
 }
 
-func (inbox *inbox) Feed(ctx context.Context, req *protos.InboxFeedRequest) (*protos.InboxFeedResponse, error) {
+func (inbox *inbox) Feed(ctx context.Context, req *InboxFeedRequest) (*protos.InboxFeedResponse, error) {
 	if req == nil {
 		return nil, ErrRequestRequired
 	}

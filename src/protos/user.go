@@ -1,6 +1,6 @@
 package protos
 
-type user struct {
+type User struct {
 	Pk                         int64  `json:"pk"`
 	Username                   string `json:"username"`
 	FullName                   string `json:"full_name"`
@@ -10,8 +10,8 @@ type user struct {
 	HasAnonymousProfilePicture bool   `json:"has_anonymous_profile_picture"`
 }
 
-type loggedInUser struct {
-	user
+type LoggedInUser struct {
+	User
 	IsBusiness            bool   `json:"is_business"`
 	CanSeeOrganicInsights bool   `json:"can_see_organic_insights"`
 	ShowInsightsTerms     bool   `json:"show_insights_terms"`
@@ -19,19 +19,19 @@ type loggedInUser struct {
 	PhoneNumber           string `json:"phone_number"`
 }
 
-type threadUser struct {
-	user
-	FriendshipStatus friendshipStatus `json:"friendship_status"`
+type ThreadUser struct {
+	User
+	FriendshipStatus FriendshipStatus `json:"friendship_status"`
 }
 
-type mediaOrAdUser struct {
-	threadUser
+type MediaOrAdUser struct {
+	ThreadUser
 	ProfilePicID  string `json:"profile_pic_id"`
 	IsUnpublished bool   `json:"is_unpublished"`
 	IsFavorite    bool   `json:"is_favorite"`
 }
 
-type friendshipStatus struct {
+type FriendshipStatus struct {
 	Following       bool `json:"following"`
 	Blocking        bool `json:"blocking"`
 	IsPrivate       bool `json:"is_private"`

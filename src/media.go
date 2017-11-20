@@ -21,7 +21,7 @@ type media struct {
 	authManager    auth.AuthManager
 }
 
-func (media *media) Like(ctx context.Context, req *protos.MediaLikeRequest) (*protos.MediaLikeResponse, error) {
+func (media *media) Like(ctx context.Context, req *MediaLikeRequest) (*protos.MediaLikeResponse, error) {
 	if req == nil {
 		return nil, ErrRequestRequired
 	}
@@ -38,18 +38,23 @@ func (media *media) Like(ctx context.Context, req *protos.MediaLikeRequest) (*pr
 	}
 	igSigKeyVersion, signedBody, _ := media.authManager.GenerateSignature(sigPayload) // TODO: handle error
 
-	req.Src = "profile"
-	req.IgSigKeyVersion = igSigKeyVersion
-	req.SignedBody = signedBody
+	internalReq := &protos.MediaLikeRequest{
+		MediaID: req.MediaID,
+		Src:     "profile",
+		LoginRequest: protos.LoginRequest{
+			IgSigKeyVersion: igSigKeyVersion,
+			SignedBody:      signedBody,
+		},
+	}
 
-	_, body, _ := media.requestManager.Post(ctx, urlStru.String(), req) // TODO: handle error
+	_, body, _ := media.requestManager.Post(ctx, urlStru.String(), internalReq) // TODO: handle error
 
 	result := &protos.MediaLikeResponse{}
 	json.Unmarshal([]byte(body), result) // TODO: handle error
 	return result, nil
 }
 
-func (media *media) Unlike(ctx context.Context, req *protos.MediaUnlikeRequest) (*protos.MediaUnlikeResponse, error) {
+func (media *media) Unlike(ctx context.Context, req *MediaUnlikeRequest) (*protos.MediaUnlikeResponse, error) {
 	if req == nil {
 		return nil, ErrRequestRequired
 	}
@@ -66,11 +71,16 @@ func (media *media) Unlike(ctx context.Context, req *protos.MediaUnlikeRequest) 
 	}
 	igSigKeyVersion, signedBody, _ := media.authManager.GenerateSignature(sigPayload) // TODO: handle error
 
-	req.Src = "profile"
-	req.IgSigKeyVersion = igSigKeyVersion
-	req.SignedBody = signedBody
+	internalReq := &protos.MediaLikeRequest{
+		MediaID: req.MediaID,
+		Src:     "profile",
+		LoginRequest: protos.LoginRequest{
+			IgSigKeyVersion: igSigKeyVersion,
+			SignedBody:      signedBody,
+		},
+	}
 
-	_, body, _ := media.requestManager.Post(ctx, urlStru.String(), req) // TODO: handle error
+	_, body, _ := media.requestManager.Post(ctx, urlStru.String(), internalReq) // TODO: handle error
 
 	result := &protos.MediaUnlikeResponse{}
 	json.Unmarshal([]byte(body), result) // TODO: handle error

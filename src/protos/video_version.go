@@ -1,6 +1,6 @@
 package protos
 
-type videoVersion struct {
+type VideoVersion struct {
 	URL    string `json:"url"`
 	Width  int    `json:"width"`
 	Type   int    `json:"type"`

@@ -81,12 +81,12 @@ func (ig *instagram) Login(ctx context.Context) error {
 	}
 	igSigKeyVersion, signedBody, _ := ig.authManager.GenerateSignature(sigPayload) // TODO: handle error
 
-	req := protos.LoginRequest{
+	internalReq := &protos.LoginRequest{
 		IgSigKeyVersion: igSigKeyVersion,
 		SignedBody:      signedBody,
 	}
 
-	resp, body, _ := ig.requestManager.Post(ctx, constants.LoginEndpoint, req)
+	resp, body, _ := ig.requestManager.Post(ctx, constants.LoginEndpoint, internalReq)
 
 	loginResp := &protos.LoginResponse{}
 	json.Unmarshal([]byte(body), loginResp) // TODO: handle error

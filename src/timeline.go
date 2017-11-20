@@ -18,7 +18,7 @@ type timeline struct {
 	requestManager request.RequestManger
 }
 
-func (timeline *timeline) Feed(ctx context.Context, req *protos.TimelineFeedRequest) (*protos.TimelineFeedResponse, error) {
+func (timeline *timeline) Feed(ctx context.Context, req *TimelineFeedRequest) (*protos.TimelineFeedResponse, error) {
 	if req == nil {
 		return nil, ErrRequestRequired
 	}
@@ -26,11 +26,15 @@ func (timeline *timeline) Feed(ctx context.Context, req *protos.TimelineFeedRequ
 	urlStru, _ := url.Parse(constants.TimelineFeedEndpoint) // TODO: handle error
 	query := urlStru.Query()
 
-	if req.MaxID != "" {
-		query.Set("max_id", req.MaxID)
+	internalReq := &protos.TimelineFeedRequest{
+		UserID:    req.UserID,
+		MaxID:     req.MaxID,
+		RankToken: timeline.authManager.GenerateRankToken(req.UserID),
 	}
 
-	req.RankToken = timeline.authManager.GenerateRankToken(req.UserID)
+	if internalReq.MaxID != "" {
+		query.Set("max_id", internalReq.MaxID)
+	}
 
 	urlStru.RawQuery = query.Encode()
 
