@@ -1,6 +1,6 @@
 package protos
 
-type thread struct {
+type Thread struct {
 	ThreadID string        `json:"thread_id"`
 	Users    []*ThreadUser `json:"users"`
 	Items    []*ThreadItem `json:"items"`

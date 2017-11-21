@@ -27,17 +27,17 @@ type InboxFeedResponse struct {
 
 type ThreadBroadcastTextResponse struct {
 	defaultResponse
-	Threads []*ThreadItem `json:"threads"`
+	Threads []*Thread `json:"threads"`
 }
 
 type ThreadBroadcastLinkResponse struct {
 	defaultResponse
-	Threads []*ThreadItem `json:"threads"`
+	Threads []*Thread `json:"threads"`
 }
 
 type ThreadShowResponse struct {
 	defaultResponse
-	Thread *ThreadItem `json:"thread"`
+	Thread *Thread `json:"thread"`
 }
 
 type ThreadApproveAllResponse struct {
