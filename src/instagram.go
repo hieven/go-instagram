@@ -27,6 +27,7 @@ type instagram struct {
 	timeline Timeline
 	thread   Thread
 	media    Media
+	location Location
 }
 
 func New(cnf *config.Config) (Instagram, error) {
@@ -52,6 +53,7 @@ func New(cnf *config.Config) (Instagram, error) {
 	inbox := &inbox{requestManager: requestManager}
 	thread := &thread{requestManager: requestManager, authManager: authManager, textManager: textManager}
 	media := &media{config: cnf, requestManager: requestManager, authManager: authManager}
+	location := &location{requestManager: requestManager, authManager: authManager}
 
 	ig := &instagram{
 		config: cnf,
@@ -60,6 +62,7 @@ func New(cnf *config.Config) (Instagram, error) {
 		inbox:    inbox,
 		thread:   thread,
 		media:    media,
+		location: location,
 
 		// utils
 		authManager:    authManager,
@@ -114,4 +117,8 @@ func (ig *instagram) Thread() Thread {
 
 func (ig *instagram) Media() Media {
 	return ig.media
+}
+
+func (ig *instagram) Location() Location {
+	return ig.location
 }

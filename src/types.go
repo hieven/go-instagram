@@ -13,6 +13,7 @@ type Instagram interface {
 	Inbox() Inbox
 	Thread() Thread
 	Media() Media
+	Location() Location
 }
 
 type Timeline interface {
@@ -33,6 +34,10 @@ type Thread interface {
 type Media interface {
 	Like(context.Context, *MediaLikeRequest) (*protos.MediaLikeResponse, error)
 	Unlike(context.Context, *MediaUnlikeRequest) (*protos.MediaUnlikeResponse, error)
+}
+
+type Location interface {
+	Feed(context.Context, *LocationFeedRequest) (*protos.LocationFeedResponse, error)
 }
 
 type TimelineFeedRequest struct {
@@ -66,4 +71,8 @@ type MediaLikeRequest struct {
 
 type MediaUnlikeRequest struct {
 	MediaID string // NOTE: required
+}
+
+type LocationFeedRequest struct {
+	Pk int64
 }

@@ -51,3 +51,9 @@ type MediaLikeResponse struct {
 type MediaUnlikeResponse struct {
 	defaultResponse
 }
+
+type LocationFeedResponse struct {
+	defaultResponse
+	RankedItems []*Media `json:"ranked_items"`
+	Items       []*Media `json:"items"`
+}
