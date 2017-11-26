@@ -30,6 +30,13 @@ type ThreadBroadcastLinkRequest struct {
 	LinkURLs      string `json:"link_urls"`      // NOTE: forbidden
 }
 
+type ThreadBroadcastShareRequest struct {
+	ClientContext string `json:"client_context"` // NOTE: optional
+	ThreadIDs     string `json:"thread_ids"`     // NOTE: required
+	MediaID       string `json:"media_id"`       // NOTE: required
+	Text          string `json:"text"`           // NOTE: optional
+}
+
 type ThreadShowRequest struct {
 	ThreadID string // NOTE: required
 }

@@ -82,6 +82,27 @@ func (thread *thread) BroadcastLink(ctx context.Context, req *ThreadBroadcastLin
 	return result, nil
 }
 
+func (thread *thread) BroadcastShare(ctx context.Context, req *ThreadBroadcastShareRequest) (*protos.ThreadBroadcastShareResponse, error) {
+	if req == nil {
+		return nil, ErrRequestRequired
+	}
+
+	urlStru, _ := url.Parse(constants.ThreadBroadcastShareEndpoint) // TODO: handle error
+
+	internalReq := &protos.ThreadBroadcastShareRequest{
+		ThreadIDs:     "[" + req.ThreadIDs + "]",
+		Text:          req.Text,
+		MediaID:       req.MediaID,
+		ClientContext: thread.authManager.GenerateUUID(),
+	}
+
+	_, body, _ := thread.requestManager.Post(ctx, urlStru.String(), internalReq) // TODO: handle error
+
+	result := &protos.ThreadBroadcastShareResponse{}
+	json.Unmarshal([]byte(body), result) // TODO: handle error
+	return result, nil
+}
+
 func (thread *thread) Show(ctx context.Context, req *ThreadShowRequest) (*protos.ThreadShowResponse, error) {
 	if req == nil {
 		return nil, ErrRequestRequired

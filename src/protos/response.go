@@ -35,6 +35,11 @@ type ThreadBroadcastLinkResponse struct {
 	Threads []*Thread `json:"threads"`
 }
 
+type ThreadBroadcastShareResponse struct {
+	defaultResponse
+	Threads []*Thread `json:"threads"`
+}
+
 type ThreadShowResponse struct {
 	defaultResponse
 	Thread *Thread `json:"thread"`

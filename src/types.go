@@ -28,6 +28,7 @@ type Thread interface {
 	ApproveAll(context.Context, *ThreadApproveAllRequest) (*protos.ThreadApproveAllResponse, error)
 	BroadcastText(context.Context, *ThreadBroadcastTextRequest) (*protos.ThreadBroadcastTextResponse, error)
 	BroadcastLink(context.Context, *ThreadBroadcastLinkRequest) (*protos.ThreadBroadcastLinkResponse, error)
+	BroadcastShare(context.Context, *ThreadBroadcastShareRequest) (*protos.ThreadBroadcastShareResponse, error)
 	Show(context.Context, *ThreadShowRequest) (*protos.ThreadShowResponse, error)
 }
 
@@ -41,7 +42,7 @@ type Location interface {
 }
 
 type TimelineFeedRequest struct {
-	UserID int64  // NOTE: required
+	UserID int64
 	MaxID  string // NOTE: optional
 }
 
@@ -52,25 +53,31 @@ type InboxFeedRequest struct {
 type ThreadApproveAllRequest struct{}
 
 type ThreadBroadcastTextRequest struct {
-	ThreadIDs string // NOTE: required
-	Text      string // NOTE: required
+	ThreadIDs string
+	Text      string
 }
 
 type ThreadBroadcastLinkRequest struct {
-	ThreadIDs string // NOTE: required
-	LinkText  string // NOTE: required
+	ThreadIDs string
+	LinkText  string
+}
+
+type ThreadBroadcastShareRequest struct {
+	ThreadIDs string
+	MediaID   string
+	Text      string
 }
 
 type ThreadShowRequest struct {
-	ThreadID string // NOTE: required
+	ThreadID string
 }
 
 type MediaLikeRequest struct {
-	MediaID string // NOTE: required
+	MediaID string
 }
 
 type MediaUnlikeRequest struct {
-	MediaID string // NOTE: required
+	MediaID string
 }
 
 type LocationFeedRequest struct {

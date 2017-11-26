@@ -24,10 +24,11 @@ var (
 
 	TimelineFeedEndpoint = APIEndpoint + "/feed/timeline/?ranked_content=true"
 
-	ThreadApproveAllEndpoint    = APIEndpoint + "/direct_v2/threads/approve_all/"
-	ThreadBroadcastTextEndpoint = APIEndpoint + "/direct_v2/threads/broadcast/text/"
-	ThreadBroadcastLinkEndpoint = APIEndpoint + "/direct_v2/threads/broadcast/link/"
-	ThreadShowEndpoint          = APIEndpoint + "/direct_v2/threads/%s/"
+	ThreadApproveAllEndpoint     = APIEndpoint + "/direct_v2/threads/approve_all/"
+	ThreadBroadcastTextEndpoint  = APIEndpoint + "/direct_v2/threads/broadcast/text/"
+	ThreadBroadcastLinkEndpoint  = APIEndpoint + "/direct_v2/threads/broadcast/link/"
+	ThreadBroadcastShareEndpoint = APIEndpoint + "/direct_v2/threads/broadcast/media_share/?media_type=photo"
+	ThreadShowEndpoint           = APIEndpoint + "/direct_v2/threads/%s/"
 
 	MediaLikeEndpoint   = APIEndpoint + "/media/%s/like/"
 	MediaUnlikeEndpoint = APIEndpoint + "/media/%s/unlike/"
