@@ -31,6 +31,7 @@ var _ = Describe("instagram", func() {
 		mockInbox    *inbox
 		mockThread   *thread
 		mockMedia    *media
+		mockLocation *location
 
 		cnf *config.Config
 		ig  *instagram
@@ -45,6 +46,7 @@ var _ = Describe("instagram", func() {
 		mockInbox = &inbox{}
 		mockThread = &thread{}
 		mockMedia = &media{}
+		mockLocation = &location{}
 
 		ig = &instagram{
 			config: &config.Config{
@@ -60,6 +62,7 @@ var _ = Describe("instagram", func() {
 			inbox:    mockInbox,
 			thread:   mockThread,
 			media:    mockMedia,
+			location: mockLocation,
 		}
 	})
 
@@ -285,6 +288,22 @@ var _ = Describe("instagram", func() {
 
 		JustBeforeEach(func() {
 			client = ig.Media()
+		})
+
+		Context("when success", func() {
+			It("should return client", func() {
+				Expect(client).NotTo(BeNil())
+			})
+		})
+	})
+
+	Describe("#Location", func() {
+		var (
+			client Location
+		)
+
+		JustBeforeEach(func() {
+			client = ig.Location()
 		})
 
 		Context("when success", func() {

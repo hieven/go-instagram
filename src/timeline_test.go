@@ -3,43 +3,49 @@ package instagram
 import (
 	"context"
 	"encoding/json"
+	"math/rand"
 	"net/url"
 
 	"github.com/stretchr/testify/mock"
 
 	"github.com/hieven/go-instagram/src/constants"
 	"github.com/hieven/go-instagram/src/protos"
+	authMocks "github.com/hieven/go-instagram/src/utils/auth/mocks"
 	requestMocks "github.com/hieven/go-instagram/src/utils/request/mocks"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("inbox", func() {
+var _ = Describe("timeline", func() {
 	var (
+		mockAuthManager    *authMocks.AuthManager
 		mockRequestManager *requestMocks.RequestManger
 
 		ctx    context.Context
-		client *inbox
+		client *timeline
 	)
 
 	BeforeEach(func() {
+		mockAuthManager = &authMocks.AuthManager{}
 		mockRequestManager = &requestMocks.RequestManger{}
 
 		ctx = context.Background()
 
-		client = &inbox{
+		client = &timeline{
+			authManager:    mockAuthManager,
 			requestManager: mockRequestManager,
 		}
 	})
 
 	Describe("Feed", func() {
 		var (
-			req *InboxFeedRequest
+			req *TimelineFeedRequest
 
-			mockResp *protos.InboxFeedResponse
-			mockBody string
+			mockGenerateRankTokenResp string
+			mockResp                  *protos.TimelineFeedResponse
+			mockBody                  string
 
-			resp *protos.InboxFeedResponse
+			resp *protos.TimelineFeedResponse
 			err  error
 
 			expURLStru  *url.URL
@@ -48,19 +54,22 @@ var _ = Describe("inbox", func() {
 		)
 
 		BeforeEach(func() {
-			req = &InboxFeedRequest{}
-
-			mockResp = &protos.InboxFeedResponse{
-				Inbox: &protos.Inbox{},
+			req = &TimelineFeedRequest{
+				UserID: rand.Int63(),
 			}
+
+			mockGenerateRankTokenResp = "rank token"
+
+			mockResp = &protos.TimelineFeedResponse{}
 			mockBodyBytes, _ := json.Marshal(mockResp)
 			mockBody = string(mockBodyBytes)
 
-			expURLStru, _ = url.Parse(constants.InboxEndpoint)
+			expURLStru, _ = url.Parse(constants.TimelineFeedEndpoint)
 			expURLQuery = expURLStru.Query()
 		})
 
 		JustBeforeEach(func() {
+			mockAuthManager.On("GenerateRankToken", mock.Anything).Return(mockGenerateRankTokenResp)
 			mockRequestManager.On("Get", mock.Anything, mock.Anything).Return(nil, mockBody, nil)
 
 			resp, err = client.Feed(ctx, req)
@@ -73,6 +82,11 @@ var _ = Describe("inbox", func() {
 			It("should return response", func() {
 				Expect(err).To(BeNil())
 				Expect(resp).NotTo(BeNil())
+			})
+
+			It("should call authManager.GenerateRankToken", func() {
+				mockAuthManager.AssertNumberOfCalls(GinkgoT(), "GenerateRankToken", 1)
+				mockAuthManager.AssertCalled(GinkgoT(), "GenerateRankToken", req.UserID)
 			})
 
 			It("should call requestManager.Get", func() {
@@ -93,13 +107,14 @@ var _ = Describe("inbox", func() {
 			})
 		})
 
-		Context("when cursor is provided", func() {
+		Context("when MaxID is provided", func() {
 			BeforeEach(func() {
-				req.Cursor = "hello"
-				expURLQuery.Set("cursor", req.Cursor)
+				req.MaxID = "max id"
+
+				expURLQuery.Set("max_id", req.MaxID)
 			})
 
-			It("should be added to query string", func() {
+			It("should add it to query string", func() {
 				mockRequestManager.AssertCalled(GinkgoT(), "Get", mock.Anything, expURLStr)
 			})
 		})
