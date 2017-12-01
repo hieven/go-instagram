@@ -71,7 +71,7 @@ func (media *media) Unlike(ctx context.Context, req *MediaUnlikeRequest) (*proto
 	}
 	igSigKeyVersion, signedBody, _ := media.authManager.GenerateSignature(sigPayload) // TODO: handle error
 
-	internalReq := &protos.MediaLikeRequest{
+	internalReq := &protos.MediaUnlikeRequest{
 		MediaID: req.MediaID,
 		Src:     "profile",
 		LoginRequest: protos.LoginRequest{
