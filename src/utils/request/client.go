@@ -4,7 +4,6 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/hieven/go-instagram/src/constants"
 	"github.com/hieven/go-instagram/src/utils/session"
 	"github.com/parnurzeal/gorequest"
 )
@@ -27,7 +26,7 @@ func (request *requestManager) Get(ctx context.Context, url string) (*http.Respo
 	req := gorequest.New().
 		Get(url)
 
-	request.withDefaultHeader(req)
+	withDefaultHeader(request.sessionManager, req)
 
 	resp, body, errs := req.End()
 
@@ -45,7 +44,7 @@ func (request *requestManager) Post(ctx context.Context, url string, data interf
 		Type("multipart").
 		SendStruct(data)
 
-	request.withDefaultHeader(req)
+	withDefaultHeader(request.sessionManager, req)
 
 	resp, body, errs := req.End()
 
@@ -55,18 +54,4 @@ func (request *requestManager) Post(ctx context.Context, url string, data interf
 	}
 
 	return resp, body, err
-}
-
-func (request *requestManager) withDefaultHeader(req *gorequest.SuperAgent) *gorequest.SuperAgent {
-	cookies := request.sessionManager.GetCookies()
-
-	return req.
-		Set("Connection", "close").
-		Set("Accept", "*/*").
-		Set("X-IG-Connection-Type", "WIFI").
-		Set("X-IG-Capabilities", "3QI=").
-		Set("Accept-Language", "en-US").
-		Set("Host", constants.Hostname).
-		Set("User-Agent", "Instagram "+constants.AppVersion+" Android (21/5.1.1; 401dpi; 1080x1920; Oppo; A31u; A31u; en_US)").
-		AddCookies(cookies)
 }
