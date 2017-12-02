@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/parnurzeal/gorequest"
 	"github.com/stretchr/testify/mock"
 
 	requestMocks "github.com/hieven/go-instagram/src/utils/request/mocks"
+	"github.com/hieven/go-instagram/src/utils/session"
 	sessionMocks "github.com/hieven/go-instagram/src/utils/session/mocks"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -58,6 +60,8 @@ var _ = Describe("client", func() {
 			err  error
 
 			expMethod string
+
+			oriWithDefaultHeader func(sessionManager session.SessionManager, req *gorequest.SuperAgent) *gorequest.SuperAgent
 		)
 
 		BeforeEach(func() {
@@ -70,6 +74,7 @@ var _ = Describe("client", func() {
 			urlStr = ts.URL
 
 			mockCommon.On("WithDefaultHeader", mock.Anything, mock.Anything).Return(nil)
+			oriWithDefaultHeader = withDefaultHeader
 			withDefaultHeader = mockCommon.WithDefaultHeader
 
 			expMethod = ""
@@ -77,6 +82,10 @@ var _ = Describe("client", func() {
 
 		JustBeforeEach(func() {
 			resp, body, err = manager.Get(ctx, urlStr)
+		})
+
+		AfterEach(func() {
+			withDefaultHeader = oriWithDefaultHeader
 		})
 
 		Context("when success", func() {
@@ -103,6 +112,8 @@ var _ = Describe("client", func() {
 			err  error
 
 			expMethod string
+
+			oriWithDefaultHeader func(sessionManager session.SessionManager, req *gorequest.SuperAgent) *gorequest.SuperAgent
 		)
 
 		BeforeEach(func() {
@@ -115,6 +126,7 @@ var _ = Describe("client", func() {
 			urlStr = ts.URL
 
 			mockCommon.On("WithDefaultHeader", mock.Anything, mock.Anything).Return(nil)
+			oriWithDefaultHeader = withDefaultHeader
 			withDefaultHeader = mockCommon.WithDefaultHeader
 
 			expMethod = ""
@@ -122,6 +134,10 @@ var _ = Describe("client", func() {
 
 		JustBeforeEach(func() {
 			resp, body, err = manager.Post(ctx, urlStr, nil)
+		})
+
+		AfterEach(func() {
+			withDefaultHeader = oriWithDefaultHeader
 		})
 
 		Context("when success", func() {
