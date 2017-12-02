@@ -73,6 +73,7 @@ var _ = Describe("inbox", func() {
 			It("should return response", func() {
 				Expect(err).To(BeNil())
 				Expect(resp).NotTo(BeNil())
+				Expect(resp).To(Equal(mockResp))
 			})
 
 			It("should call requestManager.Get", func() {

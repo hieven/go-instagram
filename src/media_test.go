@@ -117,6 +117,7 @@ var _ = Describe("media", func() {
 			It("should return response", func() {
 				Expect(err).To(BeNil())
 				Expect(resp).NotTo(BeNil())
+				Expect(resp).To(Equal(mockResp))
 			})
 
 			It("should call authManager.GenerateUUID", func() {
@@ -219,6 +220,7 @@ var _ = Describe("media", func() {
 			It("should return response", func() {
 				Expect(err).To(BeNil())
 				Expect(resp).NotTo(BeNil())
+				Expect(resp).To(Equal(mockResp))
 			})
 
 			It("should call authManager.GenerateUUID", func() {

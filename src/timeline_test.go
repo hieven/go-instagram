@@ -82,6 +82,7 @@ var _ = Describe("timeline", func() {
 			It("should return response", func() {
 				Expect(err).To(BeNil())
 				Expect(resp).NotTo(BeNil())
+				Expect(resp).To(Equal(mockResp))
 			})
 
 			It("should call authManager.GenerateRankToken", func() {
