@@ -30,16 +30,21 @@ The project is still in its early stage. Any pull request to extend its function
 ## Example
 
 ```go
-ig := instagram.Create(username, password) // init an instance
+cnf := &config.Config{
+  Username: "USERNAME",
+  Password: "PASSWORD",
+}
 
-ig.Login() // login Instagram
+ctx := context.Background()
 
-ig.TimelineFeed.Get() // get timeline feed
+ig, _ := instagram.New(cnf)
+ig.Login(ctx)
 
-ig.Like(ig.TimelineFeed.Items[0].ID) // like the first item of the feed
+Aresp, _ := ig.Timeline().Feed(ctx, instagram.TimelineFeedReques{})
+fmt.Println(Aresp.Items[0].MediaOrAd)
 ```
 
-Find more complex examples on [go-instagram-example](https://github.com/hieven/go-instagram-example)
+Find more complex examples on [examples](examples)
 
 ## License
 

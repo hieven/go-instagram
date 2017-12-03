@@ -1,4 +1,4 @@
-package: github.com/hieven/go-instagram
+package: github.com/hieven/go-instagram/src
 import:
 - package: github.com/parnurzeal/gorequest
   version: ^0.2.14
@@ -9,3 +9,5 @@ import:
   version: ^1.1.4
 - package: gopkg.in/redis.v5
   version: ^5.2.9
+- package: mvdan.cc/xurls
+  version: ^1.1.0
