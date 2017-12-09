@@ -8,6 +8,7 @@ import (
 
 type Instagram interface {
 	Login(context.Context) error
+	RememberMe(context.Context) error
 
 	Timeline() Timeline
 	Inbox() Inbox
