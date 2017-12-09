@@ -3,6 +3,7 @@ package instagram
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/hieven/go-instagram/src/constants"
@@ -23,6 +24,8 @@ import (
 
 var _ = Describe("instagram", func() {
 	var (
+		mockCommon *MockCommon
+
 		mockAuthManager    *authMocks.AuthManager
 		mockSessionManager *sessionMocks.SessionManager
 		mockRequestManager *requestMocks.RequestManger
@@ -38,6 +41,8 @@ var _ = Describe("instagram", func() {
 	)
 
 	BeforeEach(func() {
+		mockCommon = &MockCommon{}
+
 		mockAuthManager = &authMocks.AuthManager{}
 		mockSessionManager = &sessionMocks.SessionManager{}
 		mockRequestManager = &requestMocks.RequestManger{}
@@ -127,6 +132,189 @@ var _ = Describe("instagram", func() {
 	})
 
 	Describe("#Login", func() {
+		var (
+			originalLogin func(*instagram, context.Context) error
+
+			ctx context.Context
+
+			mockLoginErr error
+
+			err error
+		)
+
+		BeforeEach(func() {
+			originalLogin = login
+			login = mockCommon.Login
+
+			ctx = context.Background()
+
+			mockLoginErr = nil
+		})
+
+		AfterEach(func() {
+			login = originalLogin
+		})
+
+		JustBeforeEach(func() {
+			mockCommon.On("Login", mock.Anything, mock.Anything).Return(mockLoginErr)
+
+			err = ig.Login(ctx)
+		})
+
+		Context("when success", func() {
+			It("should return no error", func() {
+				Expect(err).To(BeNil())
+			})
+
+			It("should call login", func() {
+				mockCommon.AssertNumberOfCalls(GinkgoT(), "Login", 1)
+				mockCommon.AssertCalled(GinkgoT(), "Login", ig, ctx)
+			})
+		})
+	})
+
+	Describe("#RememberMe", func() {
+		var (
+			originalLogin func(*instagram, context.Context) error
+
+			ctx context.Context
+
+			mockGetCookiesResp []*http.Cookie
+			mockLoginErr       error
+
+			err error
+		)
+
+		BeforeEach(func() {
+			originalLogin = login
+			login = mockCommon.Login
+
+			ctx = context.Background()
+
+			mockGetCookiesResp = []*http.Cookie{&http.Cookie{}}
+			mockLoginErr = nil
+		})
+
+		AfterEach(func() {
+			login = originalLogin
+		})
+
+		JustBeforeEach(func() {
+			mockSessionManager.On("GetCookies").Return(mockGetCookiesResp)
+			mockCommon.On("Login", mock.Anything, mock.Anything).Return(mockLoginErr)
+
+			err = ig.RememberMe(ctx)
+		})
+
+		Context("when cookies haven't expired", func() {
+			It("should have no error", func() {
+				Expect(err).To(BeNil())
+			})
+
+			It("should not call login", func() {
+				mockCommon.AssertNumberOfCalls(GinkgoT(), "Login", 0)
+			})
+		})
+
+		Context("when cookies don't exist", func() {
+			BeforeEach(func() {
+				mockGetCookiesResp = []*http.Cookie{}
+				mockLoginErr = errors.New("oops")
+			})
+
+			It("should return err from login", func() {
+				Expect(err).NotTo(BeNil())
+				Expect(err.Error()).To(Equal(mockLoginErr.Error()))
+			})
+
+			It("should call login", func() {
+				mockCommon.AssertNumberOfCalls(GinkgoT(), "Login", 1)
+				mockCommon.AssertCalled(GinkgoT(), "Login", ig, ctx)
+			})
+		})
+	})
+
+	Describe("#Timeline", func() {
+		var (
+			client Timeline
+		)
+
+		JustBeforeEach(func() {
+			client = ig.Timeline()
+		})
+
+		Context("when success", func() {
+			It("should return client", func() {
+				Expect(client).NotTo(BeNil())
+			})
+		})
+	})
+
+	Describe("#Inbox", func() {
+		var (
+			client Inbox
+		)
+
+		JustBeforeEach(func() {
+			client = ig.Inbox()
+		})
+
+		Context("when success", func() {
+			It("should return client", func() {
+				Expect(client).NotTo(BeNil())
+			})
+		})
+	})
+
+	Describe("#Thread", func() {
+		var (
+			client Thread
+		)
+
+		JustBeforeEach(func() {
+			client = ig.Thread()
+		})
+
+		Context("when success", func() {
+			It("should return client", func() {
+				Expect(client).NotTo(BeNil())
+			})
+		})
+	})
+
+	Describe("#Media", func() {
+		var (
+			client Media
+		)
+
+		JustBeforeEach(func() {
+			client = ig.Media()
+		})
+
+		Context("when success", func() {
+			It("should return client", func() {
+				Expect(client).NotTo(BeNil())
+			})
+		})
+	})
+
+	Describe("#Location", func() {
+		var (
+			client Location
+		)
+
+		JustBeforeEach(func() {
+			client = ig.Location()
+		})
+
+		Context("when success", func() {
+			It("should return client", func() {
+				Expect(client).NotTo(BeNil())
+			})
+		})
+	})
+
+	Describe("login", func() {
 		var (
 			ctx context.Context
 
@@ -229,86 +417,6 @@ var _ = Describe("instagram", func() {
 
 			It("should not call SetCookies", func() {
 				mockSessionManager.AssertNumberOfCalls(GinkgoT(), "SetCookies", 0)
-			})
-		})
-	})
-
-	Describe("#Timeline", func() {
-		var (
-			client Timeline
-		)
-
-		JustBeforeEach(func() {
-			client = ig.Timeline()
-		})
-
-		Context("when success", func() {
-			It("should return client", func() {
-				Expect(client).NotTo(BeNil())
-			})
-		})
-	})
-
-	Describe("#Inbox", func() {
-		var (
-			client Inbox
-		)
-
-		JustBeforeEach(func() {
-			client = ig.Inbox()
-		})
-
-		Context("when success", func() {
-			It("should return client", func() {
-				Expect(client).NotTo(BeNil())
-			})
-		})
-	})
-
-	Describe("#Thread", func() {
-		var (
-			client Thread
-		)
-
-		JustBeforeEach(func() {
-			client = ig.Thread()
-		})
-
-		Context("when success", func() {
-			It("should return client", func() {
-				Expect(client).NotTo(BeNil())
-			})
-		})
-	})
-
-	Describe("#Media", func() {
-		var (
-			client Media
-		)
-
-		JustBeforeEach(func() {
-			client = ig.Media()
-		})
-
-		Context("when success", func() {
-			It("should return client", func() {
-				Expect(client).NotTo(BeNil())
-			})
-		})
-	})
-
-	Describe("#Location", func() {
-		var (
-			client Location
-		)
-
-		JustBeforeEach(func() {
-			client = ig.Location()
-		})
-
-		Context("when success", func() {
-			It("should return client", func() {
-				Expect(client).NotTo(BeNil())
 			})
 		})
 	})

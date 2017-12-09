@@ -74,6 +74,41 @@ func New(cnf *config.Config) (Instagram, error) {
 }
 
 func (ig *instagram) Login(ctx context.Context) error {
+	return login(ig, ctx)
+}
+
+func (ig *instagram) RememberMe(ctx context.Context) error {
+	cookies := ig.sessionManager.GetCookies()
+
+	if len(cookies) > 0 {
+		return nil
+	}
+
+	return login(ig, ctx)
+}
+
+func (ig *instagram) Timeline() Timeline {
+	return ig.timeline
+}
+
+func (ig *instagram) Inbox() Inbox {
+	return ig.inbox
+}
+
+func (ig *instagram) Thread() Thread {
+	return ig.thread
+}
+
+func (ig *instagram) Media() Media {
+	return ig.media
+}
+
+func (ig *instagram) Location() Location {
+	return ig.location
+}
+
+// NOTE: helper funcs
+var login = func(ig *instagram, ctx context.Context) error {
 	sigPayload := &auth.SignaturePayload{
 		Csrftoken:         constants.SigCsrfToken,
 		DeviceID:          constants.SigDeviceID,
@@ -101,24 +136,4 @@ func (ig *instagram) Login(ctx context.Context) error {
 	ig.sessionManager.SetCookies(resp.Cookies())
 
 	return nil
-}
-
-func (ig *instagram) Timeline() Timeline {
-	return ig.timeline
-}
-
-func (ig *instagram) Inbox() Inbox {
-	return ig.inbox
-}
-
-func (ig *instagram) Thread() Thread {
-	return ig.thread
-}
-
-func (ig *instagram) Media() Media {
-	return ig.media
-}
-
-func (ig *instagram) Location() Location {
-	return ig.location
 }
