@@ -33,7 +33,15 @@ func (thread *thread) ApproveAll(ctx context.Context, req *ThreadApproveAllReque
 	_, body, _ := thread.requestManager.Post(ctx, urlStru.String(), internalReq) // TODO: handle error
 
 	result := &protos.ThreadApproveAllResponse{}
-	json.Unmarshal([]byte(body), result) // TODO: handle error
+	json.Unmarshal([]byte(body), result)
+
+	if result.Message == instaMsgLoginRequired {
+		return result, ErrLoginRequired
+	}
+
+	if result.Status == instaStatusFail {
+		return result, ErrUnknown
+	}
 
 	return result, nil
 }
@@ -55,7 +63,15 @@ func (thread *thread) BroadcastText(ctx context.Context, req *ThreadBroadcastTex
 	_, body, _ := thread.requestManager.Post(ctx, urlStru.String(), internalReq) // TODO: handle error
 
 	result := &protos.ThreadBroadcastTextResponse{}
-	json.Unmarshal([]byte(body), result) // TODO: handle error
+	json.Unmarshal([]byte(body), result)
+
+	if result.Message == instaMsgLoginRequired {
+		return result, ErrLoginRequired
+	}
+
+	if result.Status == instaStatusFail {
+		return result, ErrUnknown
+	}
 
 	return result, nil
 }
@@ -78,7 +94,16 @@ func (thread *thread) BroadcastLink(ctx context.Context, req *ThreadBroadcastLin
 	_, body, _ := thread.requestManager.Post(ctx, urlStru.String(), internalReq) // TODO: handle error
 
 	result := &protos.ThreadBroadcastLinkResponse{}
-	json.Unmarshal([]byte(body), result) // TODO: handle error
+	json.Unmarshal([]byte(body), result)
+
+	if result.Message == instaMsgLoginRequired {
+		return result, ErrLoginRequired
+	}
+
+	if result.Status == instaStatusFail {
+		return result, ErrUnknown
+	}
+
 	return result, nil
 }
 
@@ -99,7 +124,16 @@ func (thread *thread) BroadcastShare(ctx context.Context, req *ThreadBroadcastSh
 	_, body, _ := thread.requestManager.Post(ctx, urlStru.String(), internalReq) // TODO: handle error
 
 	result := &protos.ThreadBroadcastShareResponse{}
-	json.Unmarshal([]byte(body), result) // TODO: handle error
+	json.Unmarshal([]byte(body), result)
+
+	if result.Message == instaMsgLoginRequired {
+		return result, ErrLoginRequired
+	}
+
+	if result.Status == instaStatusFail {
+		return result, ErrUnknown
+	}
+
 	return result, nil
 }
 
@@ -113,6 +147,19 @@ func (thread *thread) Show(ctx context.Context, req *ThreadShowRequest) (*protos
 	_, body, _ := thread.requestManager.Get(ctx, urlStru.String()) // TODO: handle error
 
 	result := &protos.ThreadShowResponse{}
-	json.Unmarshal([]byte(body), result) // TODO: handle error
+	json.Unmarshal([]byte(body), result)
+
+	if result.Message == instaMsgLoginRequired {
+		return result, ErrLoginRequired
+	}
+
+	if result.Status == instaStatusFail {
+		return result, ErrUnknown
+	}
+
+	if result.Thread == nil {
+		return result, ErrUnknown
+	}
+
 	return result, nil
 }
