@@ -66,8 +66,6 @@ var _ = Describe("thread", func() {
 			mockGenerateUUIDResp = uuid.NewV4().String()
 
 			mockResp = &protos.ThreadApproveAllResponse{}
-			mockBodyBytes, _ := json.Marshal(mockResp)
-			mockBody = string(mockBodyBytes)
 
 			expURLStru, _ = url.Parse(constants.ThreadApproveAllEndpoint)
 			expURLQuery = expURLStru.Query()
@@ -78,6 +76,9 @@ var _ = Describe("thread", func() {
 		})
 
 		JustBeforeEach(func() {
+			mockBodyBytes, _ := json.Marshal(mockResp)
+			mockBody = string(mockBodyBytes)
+
 			mockAuthManager.On("GenerateUUID").Return(mockGenerateUUIDResp)
 			mockRequestManager.On("Post", mock.Anything, mock.Anything, mock.Anything).Return(nil, mockBody, nil)
 
@@ -116,6 +117,40 @@ var _ = Describe("thread", func() {
 				Expect(resp).To(BeNil())
 			})
 		})
+
+		Context("when user didn't login", func() {
+			BeforeEach(func() {
+				mockResp = &protos.ThreadApproveAllResponse{}
+				mockResp.Status = instaStatusFail
+				mockResp.Message = instaMsgLoginRequired
+			})
+
+			It("should return login required error", func() {
+				Expect(resp).NotTo(BeNil())
+				Expect(resp.Status).To(Equal(mockResp.Status))
+				Expect(resp.Message).To(Equal(mockResp.Message))
+
+				Expect(err).NotTo(BeNil())
+				Expect(err.Error()).To(Equal(ErrLoginRequired.Error()))
+			})
+		})
+
+		Context("when unknown error happens", func() {
+			BeforeEach(func() {
+				mockResp = &protos.ThreadApproveAllResponse{}
+				mockResp.Status = instaStatusFail
+				mockResp.Message = "unknown error"
+			})
+
+			It("should return error", func() {
+				Expect(resp).NotTo(BeNil())
+				Expect(resp.Status).To(Equal(mockResp.Status))
+				Expect(resp.Message).To(Equal(mockResp.Message))
+
+				Expect(err).NotTo(BeNil())
+				Expect(err.Error()).To(Equal(ErrUnknown.Error()))
+			})
+		})
 	})
 
 	Describe("BroadcastText", func() {
@@ -148,8 +183,6 @@ var _ = Describe("thread", func() {
 					{ThreadID: "thread id"},
 				},
 			}
-			mockBodyBytes, _ := json.Marshal(mockResp)
-			mockBody = string(mockBodyBytes)
 
 			expURLStru, _ = url.Parse(constants.ThreadBroadcastTextEndpoint)
 			expURLQuery = expURLStru.Query()
@@ -163,6 +196,9 @@ var _ = Describe("thread", func() {
 		})
 
 		JustBeforeEach(func() {
+			mockBodyBytes, _ := json.Marshal(mockResp)
+			mockBody = string(mockBodyBytes)
+
 			mockAuthManager.On("GenerateUUID").Return(mockGenerateUUIDResp)
 			mockRequestManager.On("Post", mock.Anything, mock.Anything, mock.Anything).Return(nil, mockBody, nil)
 
@@ -201,6 +237,40 @@ var _ = Describe("thread", func() {
 				Expect(resp).To(BeNil())
 			})
 		})
+
+		Context("when user didn't login", func() {
+			BeforeEach(func() {
+				mockResp = &protos.ThreadBroadcastTextResponse{}
+				mockResp.Status = instaStatusFail
+				mockResp.Message = instaMsgLoginRequired
+			})
+
+			It("should return login required error", func() {
+				Expect(resp).NotTo(BeNil())
+				Expect(resp.Status).To(Equal(mockResp.Status))
+				Expect(resp.Message).To(Equal(mockResp.Message))
+
+				Expect(err).NotTo(BeNil())
+				Expect(err.Error()).To(Equal(ErrLoginRequired.Error()))
+			})
+		})
+
+		Context("when unknown error happens", func() {
+			BeforeEach(func() {
+				mockResp = &protos.ThreadBroadcastTextResponse{}
+				mockResp.Status = instaStatusFail
+				mockResp.Message = "unknown error"
+			})
+
+			It("should return error", func() {
+				Expect(resp).NotTo(BeNil())
+				Expect(resp.Status).To(Equal(mockResp.Status))
+				Expect(resp.Message).To(Equal(mockResp.Message))
+
+				Expect(err).NotTo(BeNil())
+				Expect(err.Error()).To(Equal(ErrUnknown.Error()))
+			})
+		})
 	})
 
 	Describe("BroadcastLink", func() {
@@ -234,8 +304,6 @@ var _ = Describe("thread", func() {
 					{ThreadID: "thread id"},
 				},
 			}
-			mockBodyBytes, _ := json.Marshal(mockResp)
-			mockBody = string(mockBodyBytes)
 
 			mockExtractURLResp = "mock url string"
 
@@ -252,6 +320,9 @@ var _ = Describe("thread", func() {
 		})
 
 		JustBeforeEach(func() {
+			mockBodyBytes, _ := json.Marshal(mockResp)
+			mockBody = string(mockBodyBytes)
+
 			mockTextManager.On("ExtractURL", mock.Anything).Return(mockExtractURLResp)
 			mockAuthManager.On("GenerateUUID").Return(mockGenerateUUIDResp)
 			mockRequestManager.On("Post", mock.Anything, mock.Anything, mock.Anything).Return(nil, mockBody, nil)
@@ -296,6 +367,40 @@ var _ = Describe("thread", func() {
 				Expect(resp).To(BeNil())
 			})
 		})
+
+		Context("when user didn't login", func() {
+			BeforeEach(func() {
+				mockResp = &protos.ThreadBroadcastLinkResponse{}
+				mockResp.Status = instaStatusFail
+				mockResp.Message = instaMsgLoginRequired
+			})
+
+			It("should return login required error", func() {
+				Expect(resp).NotTo(BeNil())
+				Expect(resp.Status).To(Equal(mockResp.Status))
+				Expect(resp.Message).To(Equal(mockResp.Message))
+
+				Expect(err).NotTo(BeNil())
+				Expect(err.Error()).To(Equal(ErrLoginRequired.Error()))
+			})
+		})
+
+		Context("when unknown error happens", func() {
+			BeforeEach(func() {
+				mockResp = &protos.ThreadBroadcastLinkResponse{}
+				mockResp.Status = instaStatusFail
+				mockResp.Message = "unknown error"
+			})
+
+			It("should return error", func() {
+				Expect(resp).NotTo(BeNil())
+				Expect(resp.Status).To(Equal(mockResp.Status))
+				Expect(resp.Message).To(Equal(mockResp.Message))
+
+				Expect(err).NotTo(BeNil())
+				Expect(err.Error()).To(Equal(ErrUnknown.Error()))
+			})
+		})
 	})
 
 	Describe("BroadcastShare", func() {
@@ -329,8 +434,6 @@ var _ = Describe("thread", func() {
 					{ThreadID: "thread id"},
 				},
 			}
-			mockBodyBytes, _ := json.Marshal(mockResp)
-			mockBody = string(mockBodyBytes)
 
 			expURLStru, _ = url.Parse(constants.ThreadBroadcastShareEndpoint)
 			expURLQuery = expURLStru.Query()
@@ -344,6 +447,9 @@ var _ = Describe("thread", func() {
 		})
 
 		JustBeforeEach(func() {
+			mockBodyBytes, _ := json.Marshal(mockResp)
+			mockBody = string(mockBodyBytes)
+
 			mockAuthManager.On("GenerateUUID").Return(mockGenerateUUIDResp)
 			mockRequestManager.On("Post", mock.Anything, mock.Anything, mock.Anything).Return(nil, mockBody, nil)
 
@@ -382,6 +488,40 @@ var _ = Describe("thread", func() {
 				Expect(resp).To(BeNil())
 			})
 		})
+
+		Context("when user didn't login", func() {
+			BeforeEach(func() {
+				mockResp = &protos.ThreadBroadcastShareResponse{}
+				mockResp.Status = instaStatusFail
+				mockResp.Message = instaMsgLoginRequired
+			})
+
+			It("should return login required error", func() {
+				Expect(resp).NotTo(BeNil())
+				Expect(resp.Status).To(Equal(mockResp.Status))
+				Expect(resp.Message).To(Equal(mockResp.Message))
+
+				Expect(err).NotTo(BeNil())
+				Expect(err.Error()).To(Equal(ErrLoginRequired.Error()))
+			})
+		})
+
+		Context("when unknown error happens", func() {
+			BeforeEach(func() {
+				mockResp = &protos.ThreadBroadcastShareResponse{}
+				mockResp.Status = instaStatusFail
+				mockResp.Message = "unknown error"
+			})
+
+			It("should return error", func() {
+				Expect(resp).NotTo(BeNil())
+				Expect(resp.Status).To(Equal(mockResp.Status))
+				Expect(resp.Message).To(Equal(mockResp.Message))
+
+				Expect(err).NotTo(BeNil())
+				Expect(err.Error()).To(Equal(ErrUnknown.Error()))
+			})
+		})
 	})
 
 	Describe("Show", func() {
@@ -404,15 +544,18 @@ var _ = Describe("thread", func() {
 				ThreadID: "thread id",
 			}
 
-			mockResp = &protos.ThreadShowResponse{}
-			mockBodyBytes, _ := json.Marshal(mockResp)
-			mockBody = string(mockBodyBytes)
+			mockResp = &protos.ThreadShowResponse{
+				Thread: &protos.Thread{},
+			}
 
 			expURLStru, _ = url.Parse(fmt.Sprintf(constants.ThreadShowEndpoint, req.ThreadID))
 			expURLQuery = expURLStru.Query()
 		})
 
 		JustBeforeEach(func() {
+			mockBodyBytes, _ := json.Marshal(mockResp)
+			mockBody = string(mockBodyBytes)
+
 			mockRequestManager.On("Get", mock.Anything, mock.Anything).Return(nil, mockBody, nil)
 
 			resp, err = client.Show(ctx, req)
@@ -444,6 +587,55 @@ var _ = Describe("thread", func() {
 				Expect(err).NotTo(BeNil())
 				Expect(err.Error()).To(Equal(ErrRequestRequired.Error()))
 				Expect(resp).To(BeNil())
+			})
+		})
+
+		Context("when user didn't login", func() {
+			BeforeEach(func() {
+				mockResp = &protos.ThreadShowResponse{}
+				mockResp.Status = instaStatusFail
+				mockResp.Message = instaMsgLoginRequired
+			})
+
+			It("should return login required error", func() {
+				Expect(resp).NotTo(BeNil())
+				Expect(resp.Status).To(Equal(mockResp.Status))
+				Expect(resp.Message).To(Equal(mockResp.Message))
+
+				Expect(err).NotTo(BeNil())
+				Expect(err.Error()).To(Equal(ErrLoginRequired.Error()))
+			})
+		})
+
+		Context("when unknown error happens", func() {
+			BeforeEach(func() {
+				mockResp = &protos.ThreadShowResponse{}
+				mockResp.Status = instaStatusFail
+				mockResp.Message = "unknown error"
+			})
+
+			It("should return error", func() {
+				Expect(resp).NotTo(BeNil())
+				Expect(resp.Status).To(Equal(mockResp.Status))
+				Expect(resp.Message).To(Equal(mockResp.Message))
+
+				Expect(err).NotTo(BeNil())
+				Expect(err.Error()).To(Equal(ErrUnknown.Error()))
+			})
+		})
+
+		Context("when Instagram is down", func() {
+			BeforeEach(func() {
+				mockResp = &protos.ThreadShowResponse{}
+			})
+
+			It("should return error", func() {
+				Expect(resp).NotTo(BeNil())
+				Expect(resp.Status).To(Equal(mockResp.Status))
+				Expect(resp.Message).To(Equal(mockResp.Message))
+
+				Expect(err).NotTo(BeNil())
+				Expect(err.Error()).To(Equal(ErrUnknown.Error()))
 			})
 		})
 	})

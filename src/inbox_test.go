@@ -53,14 +53,15 @@ var _ = Describe("inbox", func() {
 			mockResp = &protos.InboxFeedResponse{
 				Inbox: &protos.Inbox{},
 			}
-			mockBodyBytes, _ := json.Marshal(mockResp)
-			mockBody = string(mockBodyBytes)
 
 			expURLStru, _ = url.Parse(constants.InboxEndpoint)
 			expURLQuery = expURLStru.Query()
 		})
 
 		JustBeforeEach(func() {
+			mockBodyBytes, _ := json.Marshal(mockResp)
+			mockBody = string(mockBodyBytes)
+
 			mockRequestManager.On("Get", mock.Anything, mock.Anything).Return(nil, mockBody, nil)
 
 			resp, err = client.Feed(ctx, req)
@@ -102,6 +103,56 @@ var _ = Describe("inbox", func() {
 
 			It("should be added to query string", func() {
 				mockRequestManager.AssertCalled(GinkgoT(), "Get", mock.Anything, expURLStr)
+			})
+		})
+
+		Context("when user didn't login", func() {
+			BeforeEach(func() {
+				mockResp = &protos.InboxFeedResponse{}
+				mockResp.Status = instaStatusFail
+				mockResp.Message = instaMsgLoginRequired
+			})
+
+			It("should return login required error", func() {
+				Expect(resp).NotTo(BeNil())
+				Expect(resp.Status).To(Equal(mockResp.Status))
+				Expect(resp.Message).To(Equal(mockResp.Message))
+
+				Expect(err).NotTo(BeNil())
+				Expect(err.Error()).To(Equal(ErrLoginRequired.Error()))
+			})
+		})
+
+		Context("when unknown error happens", func() {
+			BeforeEach(func() {
+				mockResp = &protos.InboxFeedResponse{}
+				mockResp.Status = instaStatusFail
+				mockResp.Message = "unknown error"
+			})
+
+			It("should return error", func() {
+				Expect(resp).NotTo(BeNil())
+				Expect(resp.Status).To(Equal(mockResp.Status))
+				Expect(resp.Message).To(Equal(mockResp.Message))
+
+				Expect(err).NotTo(BeNil())
+				Expect(err.Error()).To(Equal(ErrUnknown.Error()))
+			})
+		})
+
+		// NOTE: When Instagram is down, it returns server unavailable HTML page
+		Context("when Instagram is down", func() {
+			BeforeEach(func() {
+				mockResp = &protos.InboxFeedResponse{}
+			})
+
+			It("should return error", func() {
+				Expect(resp).NotTo(BeNil())
+				Expect(resp.Status).To(Equal(mockResp.Status))
+				Expect(resp.Message).To(Equal(mockResp.Message))
+
+				Expect(err).NotTo(BeNil())
+				Expect(err.Error()).To(Equal(ErrUnknown.Error()))
 			})
 		})
 	})

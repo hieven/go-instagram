@@ -6,6 +6,11 @@ import (
 	"github.com/hieven/go-instagram/src/protos"
 )
 
+const (
+	instaMsgLoginRequired = "login_required"
+	instaStatusFail       = "fail"
+)
+
 type Instagram interface {
 	Login(context.Context) error
 	RememberMe(context.Context) error
