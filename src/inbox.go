@@ -31,6 +31,19 @@ func (inbox *inbox) Feed(ctx context.Context, req *InboxFeedRequest) (*protos.In
 	_, body, _ := inbox.requestManager.Get(ctx, urlStru.String()) // TODO: handle error
 
 	result := &protos.InboxFeedResponse{}
-	json.Unmarshal([]byte(body), result) // TODO: handle error
+	json.Unmarshal([]byte(body), result)
+
+	if result.Message == instaMsgLoginRequired {
+		return result, ErrLoginRequired
+	}
+
+	if result.Status == instaStatusFail {
+		return result, ErrUnknown
+	}
+
+	if result.Inbox == nil {
+		return result, ErrUnknown
+	}
+
 	return result, nil
 }
