@@ -14,7 +14,9 @@ var _ = Describe("common", func() {
 	Describe("#withDefaultHeader", func() {
 		var (
 			mockSessionManager *sessionMocks.SessionManager
-			req                *gorequest.SuperAgent
+
+			rm  *requestManager
+			req *gorequest.SuperAgent
 
 			result *gorequest.SuperAgent
 		)
@@ -23,11 +25,15 @@ var _ = Describe("common", func() {
 			mockSessionManager = &sessionMocks.SessionManager{}
 			mockSessionManager.On("GetCookies").Return([]*http.Cookie{})
 
+			rm = &requestManager{
+				sessionManager: mockSessionManager,
+			}
+
 			req = gorequest.New()
 		})
 
 		JustBeforeEach(func() {
-			result = withDefaultHeader(mockSessionManager, req)
+			result = withDefaultHeader(rm, req)
 		})
 
 		Context("when success", func() {
@@ -40,6 +46,22 @@ var _ = Describe("common", func() {
 				Expect(result.Header["Accept-Language"]).To(Equal("en-US"))
 				Expect(result.Header["Host"]).To(Equal(constants.Hostname))
 				Expect(result.Header["User-Agent"]).To(Equal("Instagram " + constants.AppVersion + " Android (21/5.1.1; 401dpi; 1080x1920; Oppo; A31u; A31u; en_US)"))
+			})
+
+			It("should call sessionManager.GetCookies", func() {
+				mockSessionManager.AssertNumberOfCalls(GinkgoT(), "GetCookies", 1)
+				mockSessionManager.AssertCalled(GinkgoT(), "GetCookies")
+			})
+
+			Context("when cookies exists", func() {
+				BeforeEach(func() {
+					rm.cookies = []*http.Cookie{
+						{Name: "cookie"},
+					}
+				})
+				It("shouldn't call sessionManager.GetCookies", func() {
+					mockSessionManager.AssertNumberOfCalls(GinkgoT(), "GetCookies", 0)
+				})
 			})
 		})
 	})

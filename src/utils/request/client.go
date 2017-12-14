@@ -26,7 +26,7 @@ func (request *requestManager) Get(ctx context.Context, url string) (*http.Respo
 	req := gorequest.New().
 		Get(url)
 
-	withDefaultHeader(request.sessionManager, req)
+	withDefaultHeader(request, req)
 
 	resp, body, errs := req.End()
 
@@ -44,7 +44,7 @@ func (request *requestManager) Post(ctx context.Context, url string, data interf
 		Type("multipart").
 		SendStruct(data)
 
-	withDefaultHeader(request.sessionManager, req)
+	withDefaultHeader(request, req)
 
 	resp, body, errs := req.End()
 

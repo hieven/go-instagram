@@ -8,8 +8,6 @@ import (
 	"github.com/parnurzeal/gorequest"
 	"github.com/stretchr/testify/mock"
 
-	requestMocks "github.com/hieven/go-instagram/src/utils/request/mocks"
-	"github.com/hieven/go-instagram/src/utils/session"
 	sessionMocks "github.com/hieven/go-instagram/src/utils/session/mocks"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -18,14 +16,14 @@ import (
 var _ = Describe("client", func() {
 	var (
 		mockSessionManager *sessionMocks.SessionManager
-		mockCommon         *requestMocks.Common
+		mockCommon         *MockCommon
 
 		manager *requestManager
 	)
 
 	BeforeEach(func() {
 		mockSessionManager = &sessionMocks.SessionManager{}
-		mockCommon = &requestMocks.Common{}
+		mockCommon = &MockCommon{}
 
 		manager = &requestManager{
 			sessionManager: mockSessionManager,
@@ -61,7 +59,7 @@ var _ = Describe("client", func() {
 
 			expMethod string
 
-			oriWithDefaultHeader func(sessionManager session.SessionManager, req *gorequest.SuperAgent) *gorequest.SuperAgent
+			oriWithDefaultHeader func(rm *requestManager, req *gorequest.SuperAgent) *gorequest.SuperAgent
 		)
 
 		BeforeEach(func() {
@@ -113,7 +111,7 @@ var _ = Describe("client", func() {
 
 			expMethod string
 
-			oriWithDefaultHeader func(sessionManager session.SessionManager, req *gorequest.SuperAgent) *gorequest.SuperAgent
+			oriWithDefaultHeader func(rm *requestManager, req *gorequest.SuperAgent) *gorequest.SuperAgent
 		)
 
 		BeforeEach(func() {
