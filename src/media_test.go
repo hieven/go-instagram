@@ -46,6 +46,66 @@ var _ = Describe("media", func() {
 		}
 	})
 
+	Describe("Info", func() {
+		var (
+			req *MediaInfoRequest
+
+			mockResp *protos.MediaInfoResponse
+			mockBody string
+
+			resp *protos.MediaInfoResponse
+			err  error
+
+			expURLStru *url.URL
+			expURLStr  string
+		)
+
+		BeforeEach(func() {
+			req = &MediaInfoRequest{
+				MediaID: "media id",
+			}
+
+			mockResp = &protos.MediaInfoResponse{}
+			mockBodyBytes, _ := json.Marshal(mockResp)
+			mockBody = string(mockBodyBytes)
+
+			expURLStru, _ = url.Parse(fmt.Sprintf(constants.MediaInfoEndpoint, req.MediaID))
+		})
+
+		JustBeforeEach(func() {
+			mockRequestManager.On("Get", mock.Anything, mock.Anything, mock.Anything).Return(nil, mockBody, nil)
+
+			resp, err = client.Info(ctx, req)
+
+			expURLStr = expURLStru.String()
+		})
+
+		Context("when success", func() {
+			It("should return response", func() {
+				Expect(err).To(BeNil())
+				Expect(resp).NotTo(BeNil())
+				Expect(resp).To(Equal(mockResp))
+			})
+
+			It("should call requestManager.Get", func() {
+				mockRequestManager.AssertNumberOfCalls(GinkgoT(), "Get", 1)
+				mockRequestManager.AssertCalled(GinkgoT(), "Get", mock.Anything, expURLStr)
+			})
+		})
+
+		Context("when req isn't provided", func() {
+			BeforeEach(func() {
+				req = nil
+			})
+
+			It("should return error", func() {
+				Expect(err).NotTo(BeNil())
+				Expect(err.Error()).To(Equal(ErrRequestRequired.Error()))
+				Expect(resp).To(BeNil())
+			})
+		})
+	})
+
 	Describe("Like", func() {
 		var (
 			req *MediaLikeRequest

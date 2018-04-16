@@ -21,6 +21,20 @@ type media struct {
 	authManager    auth.AuthManager
 }
 
+func (media *media) Info(ctx context.Context, req *MediaInfoRequest) (*protos.MediaInfoResponse, error) {
+	if req == nil {
+		return nil, ErrRequestRequired
+	}
+
+	urlStru, _ := url.Parse(fmt.Sprintf(constants.MediaInfoEndpoint, req.MediaID)) // TODO: handle error
+
+	_, body, _ := media.requestManager.Get(ctx, urlStru.String()) // TODO: handle error
+
+	result := &protos.MediaInfoResponse{}
+	json.Unmarshal([]byte(body), result) // TODO: handle error
+	return result, nil
+}
+
 func (media *media) Like(ctx context.Context, req *MediaLikeRequest) (*protos.MediaLikeResponse, error) {
 	if req == nil {
 		return nil, ErrRequestRequired
