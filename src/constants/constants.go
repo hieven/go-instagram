@@ -30,6 +30,7 @@ var (
 	ThreadBroadcastShareEndpoint = APIEndpoint + "/direct_v2/threads/broadcast/media_share/?media_type=photo"
 	ThreadShowEndpoint           = APIEndpoint + "/direct_v2/threads/%s/"
 
+	MediaInfoEndpoint   = APIEndpoint + "/media/%s/info/"
 	MediaLikeEndpoint   = APIEndpoint + "/media/%s/like/"
 	MediaUnlikeEndpoint = APIEndpoint + "/media/%s/unlike/"
 

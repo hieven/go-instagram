@@ -49,6 +49,11 @@ type ThreadApproveAllResponse struct {
 	defaultResponse
 }
 
+type MediaInfoResponse struct {
+	defaultResponse
+	Items []*Media `json:"items"`
+}
+
 type MediaLikeResponse struct {
 	defaultResponse
 }

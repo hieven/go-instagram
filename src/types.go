@@ -39,6 +39,7 @@ type Thread interface {
 }
 
 type Media interface {
+	Info(context.Context, *MediaInfoRequest) (*protos.MediaInfoResponse, error)
 	Like(context.Context, *MediaLikeRequest) (*protos.MediaLikeResponse, error)
 	Unlike(context.Context, *MediaUnlikeRequest) (*protos.MediaUnlikeResponse, error)
 }
@@ -76,6 +77,10 @@ type ThreadBroadcastShareRequest struct {
 
 type ThreadShowRequest struct {
 	ThreadID string
+}
+
+type MediaInfoRequest struct {
+	MediaID string
 }
 
 type MediaLikeRequest struct {
