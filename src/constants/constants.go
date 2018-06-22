@@ -5,9 +5,9 @@ import "fmt"
 const (
 	SigCsrfToken = "missing"
 	SigDeviceID  = "android-b256317fd493b848"
-	SigKey       = "68a04945eb02970e2e8d15266fc256f7295da123e123f44b88f09d594a5902df"
+	SigKey       = "109513c04303341a7daf27bb41b268e633b30dcc65a3fe14503f743176113869"
 	SigVersion   = "4"
-	AppVersion   = "10.8.0"
+	AppVersion   = "27.0.0.7.97"
 
 	Scheme   = "https"
 	Hostname = "i.instagram.com"
