@@ -1,0 +1,53 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "4+wnUoVOdK9cHy7rqdQdweYKiOA=",
+			"path": "github.com/bitly/go-simplejson",
+			"revision": "aabad6e819789e569bd6aabf444c935aa9ba1e44",
+			"revisionTime": "2015-09-15T16:53:35Z",
+			"version": "v0.5.0",
+			"versionExact": "v0.5.0"
+		},
+		{
+			"checksumSHA1": "vT5Rn19xP0Ndw1ydV9sGjobiIHg=",
+			"path": "github.com/jarcoal/httpmock",
+			"revision": "53def6cd0f87425f5425d4f0f27f66f048759b94",
+			"revisionTime": "2018-11-10T09:27:31Z"
+		},
+		{
+			"checksumSHA1": "k9NQSlrFti1p6+5scoNaxxVv/UI=",
+			"path": "github.com/parnurzeal/gorequest",
+			"revision": "2aea80ce763523ecc6452e61c3727ae9595a5809",
+			"revisionTime": "2016-08-30T19:50:58Z",
+			"version": "v0.2.14",
+			"versionExact": "v0.2.14"
+		},
+		{
+			"checksumSHA1": "/kKwYqD04AkkDZFQhGwklKw3RFA=",
+			"path": "github.com/stretchr/testify",
+			"revision": "69483b4bd14f5845b5a1e55bca19e954e827f1d0",
+			"revisionTime": "2016-09-25T01:54:16Z",
+			"version": "v1.1.4",
+			"versionExact": "v1.1.4"
+		},
+		{
+			"checksumSHA1": "OU/wHTJqhyQfyRnXMVWx1Ox06kQ=",
+			"path": "gopkg.in/redis.v5",
+			"revision": "a16aeec10ff407b1e7be6dd35797ccf5426ef0f0",
+			"revisionTime": "2017-03-04T11:38:25Z",
+			"version": "v5.2.9",
+			"versionExact": "v5.2.9"
+		},
+		{
+			"checksumSHA1": "dh9eLMb21ARIXqqZ142NkM0Ti7I=",
+			"path": "mvdan.cc/xurls",
+			"revision": "d315b61cf6727664f310fa87b3197e9faf2a8513",
+			"revisionTime": "2017-01-25T20:35:21Z",
+			"version": "v1.1.0",
+			"versionExact": "v1.1.0"
+		}
+	],
+	"rootPath": "github.com/hieven/go-instagram"
+}
