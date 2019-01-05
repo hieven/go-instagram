@@ -4,14 +4,15 @@ sudo: required
 dist: trusty
 
 go:
-  - "1.9"
+  - "1.11"
+
+env:
+  - GO111MODULE=on
 
 install:
   - go get github.com/onsi/ginkgo/ginkgo
   - go get github.com/onsi/gomega
   - go get -u github.com/golang/lint/golint
-  - curl https://glide.sh/get | sh
-  - glide install
 
 script:
   - make
