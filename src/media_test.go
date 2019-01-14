@@ -9,7 +9,7 @@ import (
 	"github.com/hieven/go-instagram/src/config"
 	"github.com/hieven/go-instagram/src/utils/auth"
 
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/stretchr/testify/mock"
 
@@ -36,14 +36,50 @@ var _ = Describe("media", func() {
 
 		ctx = context.Background()
 
-		client = &media{
-			config: &config.Config{
+		client, _ = newMediaClient(
+			&config.Config{
 				Username: "username",
 				Password: "password",
 			},
-			authManager:    mockAuthManager,
-			requestManager: mockRequestManager,
-		}
+			mockRequestManager,
+			mockAuthManager,
+		)
+	})
+
+	Describe("GetShortCodeByMediaID", func() {
+		var (
+			mediaID   string
+			shortCode string
+		)
+
+		JustBeforeEach(func() {
+			shortCode = client.GetShortCodeByMediaID(ctx, mediaID)
+		})
+
+		Context("when success", func() {
+			var (
+				expectedShortCode string
+			)
+
+			BeforeEach(func() {
+				mediaID = "1945840192105244210_841225"
+				expectedShortCode = "BsBA1hgHGYy"
+			})
+
+			It("should return short code", func() {
+				Expect(shortCode).To(Equal(expectedShortCode))
+			})
+		})
+
+		Context("when media id is malformed", func() {
+			BeforeEach(func() {
+				mediaID = "abcdef_123456"
+			})
+
+			It("should return empty string", func() {
+				Expect(shortCode).To(BeEmpty())
+			})
+		})
 	})
 
 	Describe("Info", func() {

@@ -39,6 +39,7 @@ type Thread interface {
 }
 
 type Media interface {
+	GetShortCodeByMediaID(ctx context.Context, mediaID string) string
 	Info(context.Context, *MediaInfoRequest) (*protos.MediaInfoResponse, error)
 	Like(context.Context, *MediaLikeRequest) (*protos.MediaLikeResponse, error)
 	Unlike(context.Context, *MediaUnlikeRequest) (*protos.MediaUnlikeResponse, error)
