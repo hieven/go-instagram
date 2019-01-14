@@ -52,7 +52,7 @@ func New(cnf *config.Config) (Instagram, error) {
 	timeline := &timeline{requestManager: requestManager, authManager: authManager}
 	inbox := &inbox{requestManager: requestManager}
 	thread := &thread{requestManager: requestManager, authManager: authManager, textManager: textManager}
-	media := &media{config: cnf, requestManager: requestManager, authManager: authManager}
+	media, _ := newMediaClient(cnf, requestManager, authManager)
 	location := &location{requestManager: requestManager, authManager: authManager}
 
 	ig := &instagram{

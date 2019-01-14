@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"strconv"
+	"strings"
 
 	"github.com/hieven/go-instagram/src/config"
 	"github.com/hieven/go-instagram/src/utils/auth"
@@ -19,6 +21,43 @@ type media struct {
 
 	requestManager request.RequestManger
 	authManager    auth.AuthManager
+	idToCodeMap    []string
+}
+
+func newMediaClient(
+	config *config.Config,
+
+	requestManager request.RequestManger,
+	authManager auth.AuthManager,
+) (*media, error) {
+	m := &media{
+		config:         config,
+		requestManager: requestManager,
+		authManager:    authManager,
+		idToCodeMap:    []string{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "-", "_"},
+	}
+
+	return m, nil
+}
+
+// GetShortCodeByMediaID convert media id to corresponding short code
+func (media *media) GetShortCodeByMediaID(ctx context.Context, mediaID string) string {
+	// media_id from Instagram is actually composed of {media_id}_{user_id}
+	parts := strings.Split(mediaID, "_")
+	realMediaID, err := strconv.Atoi(parts[0])
+	if err != nil {
+		return ""
+	}
+
+	code := ""
+
+	for realMediaID > 0 {
+		remainder := realMediaID % 64
+		realMediaID = (realMediaID - remainder) / 64
+		code = media.idToCodeMap[remainder] + code
+	}
+
+	return code
 }
 
 func (media *media) Info(ctx context.Context, req *MediaInfoRequest) (*protos.MediaInfoResponse, error) {
