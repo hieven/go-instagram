@@ -34,3 +34,22 @@ func (location *location) Feed(ctx context.Context, req *LocationFeedRequest) (*
 	json.Unmarshal([]byte(body), result) // TODO: handle error
 	return result, nil
 }
+
+func (location *location) Section(ctx context.Context, req *LocationSectionRequest) (*protos.LocationSectionResponse, error) {
+	if req == nil {
+		return nil, ErrRequestRequired
+	}
+
+	urlStru, _ := url.Parse(fmt.Sprintf(constants.LocationSectionEndpoint, req.Pk)) // TODO: handle error
+
+	internalReq := &protos.LocationSectionRequest{
+		UUID: location.authManager.GenerateUUID(),
+		Tab:  string(req.Tab),
+	}
+
+	_, body, _ := location.requestManager.Post(ctx, urlStru.String(), internalReq)
+
+	result := &protos.LocationSectionResponse{}
+	json.Unmarshal([]byte(body), result) // TODO: handle error
+	return result, nil
+}

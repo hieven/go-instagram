@@ -34,5 +34,6 @@ var (
 	MediaLikeEndpoint   = APIEndpoint + "/media/%s/like/"
 	MediaUnlikeEndpoint = APIEndpoint + "/media/%s/unlike/"
 
-	LocationFeedEndpoint = APIEndpoint + "/feed/location/%d/"
+	LocationFeedEndpoint    = APIEndpoint + "/feed/location/%d/"
+	LocationSectionEndpoint = APIEndpoint + "/locations/%d/sections/"
 )

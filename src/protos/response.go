@@ -67,3 +67,30 @@ type LocationFeedResponse struct {
 	RankedItems []*Media `json:"ranked_items"`
 	Items       []*Media `json:"items"`
 }
+
+type LocationSectionResponse struct {
+	defaultResponse
+	Sections []*LocationSection `json:"sections"`
+}
+
+type LocationSection struct {
+	LayoutType                     string                          `json:"layout_type"`
+	LayoutContent                  *LocationSectionLayoutContent   `json:"layout_content"`
+	FeedType                       string                          `json:"feed_type"`
+	LocationSectionExploreItemInfo *LocationSectionExploreItemInfo `json:"explore_item_info"`
+}
+
+type LocationSectionLayoutContent struct {
+	Medias []*LocationSectionLayoutContentMedias `json:"medias"`
+}
+
+type LocationSectionLayoutContentMedias struct {
+	Media *Media `json:"media"`
+}
+
+type LocationSectionExploreItemInfo struct {
+	NumColumns      int64 `json:"num_columns"`
+	TotalNumColumns int64 `json:"total_num_columns"`
+	AspectRatio     int64 `json:"aspect_ratio"`
+	AutoPlay        bool  `json:"autoplay"`
+}
