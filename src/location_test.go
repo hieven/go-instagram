@@ -112,4 +112,74 @@ var _ = Describe("location", func() {
 			})
 		})
 	})
+
+	Describe("Section", func() {
+		var (
+			req *LocationSectionRequest
+
+			mockGenerateUUIDResp string
+			mockResp             *protos.LocationSectionResponse
+			mockBody             string
+
+			resp *protos.LocationSectionResponse
+			err  error
+
+			expURLStru *url.URL
+			expURLStr  string
+		)
+
+		BeforeEach(func() {
+			req = &LocationSectionRequest{
+				Pk:  rand.Int63(),
+				Tab: LocationSectionTabRanked,
+			}
+
+			mockGenerateUUIDResp = uuid.NewV4().String()
+
+			mockResp = &protos.LocationSectionResponse{}
+			mockBodyBytes, _ := json.Marshal(mockResp)
+			mockBody = string(mockBodyBytes)
+
+			expURLStru, _ = url.Parse(fmt.Sprintf(constants.LocationSectionEndpoint, req.Pk))
+		})
+
+		JustBeforeEach(func() {
+			mockAuthManager.On("GenerateUUID").Return(mockGenerateUUIDResp)
+			mockRequestManager.On("Post", mock.Anything, mock.Anything, mock.Anything).Return(nil, mockBody, nil)
+
+			resp, err = client.Section(ctx, req)
+
+			expURLStr = expURLStru.String()
+		})
+
+		Context("when success", func() {
+			It("should return response", func() {
+				Expect(err).To(BeNil())
+				Expect(resp).NotTo(BeNil())
+				Expect(resp).To(Equal(mockResp))
+			})
+
+			It("should call authManager.GenerateUUID", func() {
+				mockAuthManager.AssertNumberOfCalls(GinkgoT(), "GenerateUUID", 1)
+				mockAuthManager.AssertCalled(GinkgoT(), "GenerateUUID")
+			})
+
+			It("should call requestManager.Post", func() {
+				mockRequestManager.AssertNumberOfCalls(GinkgoT(), "Post", 1)
+				mockRequestManager.AssertCalled(GinkgoT(), "Post", mock.Anything, expURLStr, mock.Anything)
+			})
+		})
+
+		Context("when req isn't provided", func() {
+			BeforeEach(func() {
+				req = nil
+			})
+
+			It("should return error", func() {
+				Expect(err).NotTo(BeNil())
+				Expect(err.Error()).To(Equal(ErrRequestRequired.Error()))
+				Expect(resp).To(BeNil())
+			})
+		})
+	})
 })

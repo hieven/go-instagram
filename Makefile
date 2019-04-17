@@ -1,4 +1,4 @@
-all: clean vet lint test
+all: build clean vet lint test
 
 test:
 	sh test.sh
@@ -11,3 +11,6 @@ vet:
 
 lint:
 	golint $(go list ./...)
+
+build:
+	go build ./src/...

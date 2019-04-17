@@ -56,3 +56,8 @@ type MediaUnlikeRequest struct {
 	MediaID string `json:"-"`   // NOTE: required
 	Src     string `json:"src"` // NOTE: forbidden
 }
+
+type LocationSectionRequest struct {
+	Tab  string `json:"tab"`
+	UUID string `json:"_uuid"`
+}

@@ -47,6 +47,7 @@ type Media interface {
 
 type Location interface {
 	Feed(context.Context, *LocationFeedRequest) (*protos.LocationFeedResponse, error)
+	Section(context.Context, *LocationSectionRequest) (*protos.LocationSectionResponse, error)
 }
 
 type TimelineFeedRequest struct {
@@ -94,4 +95,16 @@ type MediaUnlikeRequest struct {
 
 type LocationFeedRequest struct {
 	Pk int64
+}
+
+type LocationSectionTab string
+
+const (
+	LocationSectionTabRanked LocationSectionTab = "ranked"
+	LocationSectionTabRecent LocationSectionTab = "recent"
+)
+
+type LocationSectionRequest struct {
+	Pk  int64
+	Tab LocationSectionTab
 }

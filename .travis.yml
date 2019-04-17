@@ -4,7 +4,7 @@ sudo: required
 dist: trusty
 
 go:
-  - "1.11"
+  - "1.12"
 
 env:
   - GO111MODULE=on
@@ -12,7 +12,7 @@ env:
 install:
   - go get github.com/onsi/ginkgo/ginkgo
   - go get github.com/onsi/gomega
-  - go get -u github.com/golang/lint/golint
+  - go get -u golang.org/x/lint/golint
 
 script:
   - make
