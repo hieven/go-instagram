@@ -24,7 +24,6 @@ func (timeline *timeline) Feed(ctx context.Context, req *TimelineFeedRequest) (*
 	}
 
 	urlStru, _ := url.Parse(constants.TimelineFeedEndpoint) // TODO: handle error
-	query := urlStru.Query()
 
 	internalReq := &protos.TimelineFeedRequest{
 		UserID:    req.UserID,
@@ -32,14 +31,7 @@ func (timeline *timeline) Feed(ctx context.Context, req *TimelineFeedRequest) (*
 		RankToken: timeline.authManager.GenerateRankToken(req.UserID),
 	}
 
-	if internalReq.MaxID != "" {
-		query.Set("max_id", internalReq.MaxID)
-	}
-
-	urlStru.RawQuery = query.Encode()
-
-	_, body, _ := timeline.requestManager.Get(ctx, urlStru.String()) // TODO: handle error
-
+	_, body, _ := timeline.requestManager.Post(ctx, urlStru.String(), internalReq) // TODO: handle error
 	result := &protos.TimelineFeedResponse{}
 	json.Unmarshal([]byte(body), result) // TODO: handle error
 	return result, nil
