@@ -70,7 +70,7 @@ var _ = Describe("timeline", func() {
 
 		JustBeforeEach(func() {
 			mockAuthManager.On("GenerateRankToken", mock.Anything).Return(mockGenerateRankTokenResp)
-			mockRequestManager.On("Get", mock.Anything, mock.Anything).Return(nil, mockBody, nil)
+			mockRequestManager.On("Post", mock.Anything, mock.Anything, mock.Anything).Return(nil, mockBody, nil)
 
 			resp, err = client.Feed(ctx, req)
 
@@ -90,9 +90,9 @@ var _ = Describe("timeline", func() {
 				mockAuthManager.AssertCalled(GinkgoT(), "GenerateRankToken", req.UserID)
 			})
 
-			It("should call requestManager.Get", func() {
-				mockRequestManager.AssertNumberOfCalls(GinkgoT(), "Get", 1)
-				mockRequestManager.AssertCalled(GinkgoT(), "Get", mock.Anything, expURLStr)
+			It("should call requestManager.Post", func() {
+				mockRequestManager.AssertNumberOfCalls(GinkgoT(), "Post", 1)
+				mockRequestManager.AssertCalled(GinkgoT(), "Post", mock.Anything, expURLStr, mock.Anything)
 			})
 		})
 
@@ -111,12 +111,18 @@ var _ = Describe("timeline", func() {
 		Context("when MaxID is provided", func() {
 			BeforeEach(func() {
 				req.MaxID = "max id"
-
-				expURLQuery.Set("max_id", req.MaxID)
 			})
 
-			It("should add it to query string", func() {
-				mockRequestManager.AssertCalled(GinkgoT(), "Get", mock.Anything, expURLStr)
+			It("should add it to request body", func() {
+				mockRequestManager.AssertCalled(GinkgoT(), "Post",
+					mock.Anything,
+					mock.Anything,
+					mock.MatchedBy(func(internalReq *protos.TimelineFeedRequest) bool {
+						Expect(internalReq.MaxID).To(Equal(req.MaxID))
+
+						return true
+					}),
+				)
 			})
 		})
 	})
