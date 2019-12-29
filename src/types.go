@@ -27,11 +27,13 @@ type Timeline interface {
 }
 
 type Inbox interface {
+	GetPendingInbox(context.Context, *InboxGetPendingInboxRequest) (*protos.InboxGetPendingInboxResponse, error)
 	Feed(context.Context, *InboxFeedRequest) (*protos.InboxFeedResponse, error)
 }
 
 type Thread interface {
 	ApproveAll(context.Context, *ThreadApproveAllRequest) (*protos.ThreadApproveAllResponse, error)
+	ApproveMultiple(context.Context, *ThreadApproveMultipleRequest) (*protos.ThreadApproveMultipleResponse, error)
 	BroadcastText(context.Context, *ThreadBroadcastTextRequest) (*protos.ThreadBroadcastTextResponse, error)
 	BroadcastLink(context.Context, *ThreadBroadcastLinkRequest) (*protos.ThreadBroadcastLinkResponse, error)
 	BroadcastShare(context.Context, *ThreadBroadcastShareRequest) (*protos.ThreadBroadcastShareResponse, error)
@@ -50,6 +52,10 @@ type Location interface {
 	Section(context.Context, *LocationSectionRequest) (*protos.LocationSectionResponse, error)
 }
 
+type InboxGetPendingInboxRequest struct {
+	CursorID string
+}
+
 type TimelineFeedRequest struct {
 	UserID int64
 	MaxID  string // NOTE: optional
@@ -60,6 +66,10 @@ type InboxFeedRequest struct {
 }
 
 type ThreadApproveAllRequest struct{}
+
+type ThreadApproveMultipleRequest struct {
+	ThreadIDs []string
+}
 
 type ThreadBroadcastTextRequest struct {
 	ThreadIDs string

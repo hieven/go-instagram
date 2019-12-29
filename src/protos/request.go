@@ -15,6 +15,12 @@ type InboxFeedRequest struct {
 	Cursor string // NOTE: optional
 }
 
+type ThreadApproveMultipleRequest struct {
+	Csrftoken string `json:"_csrftoken"` // NOTE: optional
+	UUID      string `json:"_uuid"`      // NOTE: optional
+	ThreadIDs string `json:"thread_ids"` // NOTE: required
+}
+
 type ThreadBroadcastTextRequest struct {
 	UUID          string `json:"_uuid"`          // NOTE: optional
 	ClientContext string `json:"client_context"` // NOTE: optional

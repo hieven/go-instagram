@@ -47,3 +47,32 @@ func (inbox *inbox) Feed(ctx context.Context, req *InboxFeedRequest) (*protos.In
 
 	return result, nil
 }
+
+func (inbox *inbox) GetPendingInbox(ctx context.Context, req *InboxGetPendingInboxRequest) (*protos.InboxGetPendingInboxResponse, error) {
+	if req == nil {
+		return nil, ErrRequestRequired
+	}
+
+	urlStru, _ := url.Parse(constants.PendingInboxEndpoint) // TODO: handle error
+	query := urlStru.Query()
+
+	query.Set("persistentBadging", "true")
+	query.Set("use_unified_inbox", "true")
+
+	urlStru.RawQuery = query.Encode()
+
+	_, body, _ := inbox.requestManager.Get(ctx, urlStru.String()) // TODO: handle error
+
+	result := &protos.InboxGetPendingInboxResponse{}
+	json.Unmarshal([]byte(body), result)
+
+	if result.Message == instaMsgLoginRequired {
+		return result, ErrLoginRequired
+	}
+
+	if result.Status == instaStatusFail {
+		return result, ErrUnknown
+	}
+
+	return result, nil
+}

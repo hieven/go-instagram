@@ -17,6 +17,11 @@ type LoginResponse struct {
 	LoggedInUser *LoggedInUser `json:"logged_in_user"`
 }
 
+type InboxGetPendingInboxResponse struct {
+	defaultResponse
+	Inbox *Inbox `json:"inbox"`
+}
+
 type InboxFeedResponse struct {
 	defaultResponse
 	Inbox                *Inbox `json:"inbox"`
@@ -46,6 +51,10 @@ type ThreadShowResponse struct {
 }
 
 type ThreadApproveAllResponse struct {
+	defaultResponse
+}
+
+type ThreadApproveMultipleResponse struct {
 	defaultResponse
 }
 

@@ -47,6 +47,37 @@ func (thread *thread) ApproveAll(ctx context.Context, req *ThreadApproveAllReque
 	return result, nil
 }
 
+func (thread *thread) ApproveMultiple(ctx context.Context, req *ThreadApproveMultipleRequest) (*protos.ThreadApproveMultipleResponse, error) {
+	if req == nil {
+		return nil, ErrRequestRequired
+	}
+
+	urlStru, _ := url.Parse(constants.ThreadApproveMultipleEndpoint) // TODO: handle error
+
+	threadIDsBytes, _ := json.Marshal(req.ThreadIDs) // TODO: handle error
+
+	internalReq := &protos.ThreadApproveMultipleRequest{
+		Csrftoken: constants.SigCsrfToken,
+		UUID:      thread.authManager.GenerateUUID(),
+		ThreadIDs: string(threadIDsBytes),
+	}
+
+	_, body, _ := thread.requestManager.Post(ctx, urlStru.String(), internalReq) // TODO: handle error
+
+	result := &protos.ThreadApproveMultipleResponse{}
+	json.Unmarshal([]byte(body), result)
+
+	if result.Message == instaMsgLoginRequired {
+		return result, ErrLoginRequired
+	}
+
+	if result.Status == instaStatusFail {
+		return result, ErrUnknown
+	}
+
+	return result, nil
+}
+
 func (thread *thread) BroadcastText(ctx context.Context, req *ThreadBroadcastTextRequest) (*protos.ThreadBroadcastTextResponse, error) {
 	if req == nil {
 		return nil, ErrRequestRequired
