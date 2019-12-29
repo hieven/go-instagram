@@ -40,6 +40,7 @@ func (thread *thread) ApproveAll(ctx context.Context, req *ThreadApproveAllReque
 	}
 
 	if result.Status == instaStatusFail {
+		fmt.Println(result)
 		return result, ErrUnknown
 	}
 
